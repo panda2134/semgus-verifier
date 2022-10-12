@@ -1,8 +1,10 @@
 package org.semgus.verifier.smt
 
-import org.semgus.java.`object`.AttributeValue
 import org.semgus.java.`object`.AttributeValue.AList
 import org.semgus.java.`object`.AttributeValue.AString
+import org.semgus.java.`object`.RelationApp
+import org.semgus.java.`object`.SmtTerm
+import org.semgus.java.`object`.SmtTerm.Quantifier
 
 fun AList.toSExpression(): String {
     return "(" + entries.joinToString(" ") { v ->
@@ -13,3 +15,28 @@ fun AList.toSExpression(): String {
         }
     } + ")"
 }
+
+fun RelationApp.toSExpression(argumentPrefix: String = ""): String {
+    return "($name ${arguments.joinToString(" ") { v -> argumentPrefix + v.name }})"
+}
+
+fun Quantifier.Type.toSmtName(): String = when (this) {
+    Quantifier.Type.FOR_ALL -> "forall"
+    Quantifier.Type.EXISTS -> "exists"
+    else -> throw IllegalArgumentException("cannot convert into smt name")
+}
+
+fun SmtTerm.toSExpression(variablePrefix: String = ""): String =
+    when (this) {
+        is SmtTerm.Quantifier -> "(${type.toSmtName()}" +
+                "(${bindings.joinToString(" ") { v -> "(${variablePrefix + v.name} ${v.type})" }})" +
+                child.toSExpression(variablePrefix) + ")"
+        is SmtTerm.Variable -> variablePrefix + name
+        is SmtTerm.Application ->
+            if (arguments.isEmpty()) name.name
+            else "($name ${arguments.joinToString(" ") { v -> v.term.toSExpression(variablePrefix) }})"
+        is SmtTerm.CString -> "\"${value}\""
+        is SmtTerm.CNumber -> value.toString()
+        is SmtTerm.CBitVector -> "#x" + value.toByteArray().reversed().joinToString { v -> "%02x".format(v) }
+        else -> throw IllegalArgumentException("cannot convert this into s-expr")
+    }

@@ -6,13 +6,20 @@ import org.semgus.java.`object`.AttributeValue.AList
 import org.semgus.java.`object`.AttributeValue.AString
 import org.semgus.java.`object`.RelationApp
 import org.semgus.java.`object`.SmtTerm
-import org.semgus.java.problem.SemanticRule
+import org.semgus.java.`object`.TypedVar
 import org.semgus.java.problem.SemgusProblem
+import org.semgus.verifier.smt.toSExpression
 import java.lang.IllegalArgumentException
 
 class ProgramWalker(val program: AList, problem: SemgusProblem) {
     data class InstantiatedSemanticRule (val head: RelationApp, val bodyRelations: List<RelationApp>,
-                    val constraint: SmtTerm, val variables: Map<String, AnnotatedVar>)
+                    val constraint: SmtTerm, val variables: Map<String, AnnotatedVar>,
+                    val childTermVars: List<TypedVar>) {
+        fun toSExpression(variablePrefix: String = ""): String {
+            return "(rule (=> (and ${bodyRelations.joinToString(" ") { v->v.toSExpression(variablePrefix) }} ${constraint.toSExpression(variablePrefix)})\n" +
+                    "     ${head.toSExpression(variablePrefix)}))"
+        }
+    }
     private val rtgHelper = RegularTreeGrammarHelper(problem.nonTerminals)
     private var semanticCounter = 0
     private val instantiatedSemantics = mutableListOf<InstantiatedSemanticRule>()
@@ -61,7 +68,8 @@ class ProgramWalker(val program: AList, problem: SemgusProblem) {
                         variables = sem.variables.filter{ (_, v) ->
                             sem.head.arguments
                                 .find { x -> x.name == v.name && x.type.name == rule.nonTerminalName } == null
-                        }
+                        },
+                        childTermVars = sem.childTermVars
                     )
                     instantiatedSemantics.add(newInstRule)
                 }
@@ -83,7 +91,8 @@ class ProgramWalker(val program: AList, problem: SemgusProblem) {
                         variables = sem.variables.filter{ (_, v) ->
                             sem.head.arguments
                                 .find { x -> x.name == v.name && x.type.name == rule.nonTerminalName } == null
-                        }
+                        },
+                        childTermVars = sem.childTermVars
                     )
                     instantiatedSemantics.add(newInstRule)
                 }
