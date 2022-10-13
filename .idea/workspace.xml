@@ -4,11 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e8ac0f73-d781-4910-8949-711e60015e55" name="Changes" comment="basic SMTLIB2 generation">
+    <list default="true" id="e8ac0f73-d781-4910-8949-711e60015e55" name="Changes" comment="chore: cleanup output &amp; some refactoring">
+      <change afterPath="$PROJECT_DIR$/benchmarks/max2-exp-alt.sl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/benchmarks/max2-exp-alt.sl.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SExpression.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SExpression.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/walk/ProgramWalker.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/walk/ProgramWalker.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SMTGenerator.kt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,24 +52,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Project.color&quot;: &quot;624816&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;16&quot;,
-    &quot;last_directory_selection&quot;: &quot;/home/panda2134/Documents/semgus-verifier/src/main/kotlin/org/semgus/verifier&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Project.color": "624816",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "jdk.selected.JAVA_MODULE": "16",
+    "last_directory_selection": "/home/panda2134/Documents/semgus-verifier/src/main/kotlin/org/semgus/verifier",
+    "last_opened_file_path": "/home/panda2134/Documents/semgus-verifier/benchmarks",
+    "nodejs_package_manager_path": "npm"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;TEXT&quot;
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "TEXT"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/benchmarks" />
+    </key>
+    <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="org.semgus.verifier.smt" />
+    </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="org.semgus.verifier" />
     </key>
@@ -122,7 +132,7 @@
       <workItem from="1665366975922" duration="2399000" />
       <workItem from="1665482835507" duration="599000" />
       <workItem from="1665503385630" duration="2698000" />
-      <workItem from="1665599415532" duration="972000" />
+      <workItem from="1665599415532" duration="3130000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1665333031398</created>
@@ -138,7 +148,14 @@
       <option name="project" value="LOCAL" />
       <updated>1665598532110</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="chore: cleanup output &amp; some refactoring">
+      <created>1665636367062</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1665636367062</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -158,7 +175,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial commit" />
     <MESSAGE value="basic SMTLIB2 generation" />
-    <option name="LAST_COMMIT_MESSAGE" value="basic SMTLIB2 generation" />
+    <MESSAGE value="chore: cleanup output &amp; some refactoring" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: cleanup output &amp; some refactoring" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
