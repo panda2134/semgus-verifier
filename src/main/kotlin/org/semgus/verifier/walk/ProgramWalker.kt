@@ -9,6 +9,7 @@ import org.semgus.java.`object`.SmtTerm
 import org.semgus.java.`object`.TypedVar
 import org.semgus.java.problem.SemgusProblem
 import org.semgus.verifier.smt.toSExpression
+import org.semgus.verifier.smt.withVariablePrefix
 import java.lang.IllegalArgumentException
 
 class ProgramWalker(val program: AList, problem: SemgusProblem) {
@@ -16,7 +17,7 @@ class ProgramWalker(val program: AList, problem: SemgusProblem) {
                     val constraint: SmtTerm, val variables: Map<String, AnnotatedVar>,
                     val childTermVars: List<TypedVar>) {
         fun toSExpression(variablePrefix: String = ""): String {
-            return "(rule (=> (and ${bodyRelations.joinToString(" ") { v->v.toSExpression(variablePrefix) }} ${constraint.toSExpression(variablePrefix)})\n" +
+            return "(rule (=> (and ${bodyRelations.joinToString(" ") { v->v.toSExpression(variablePrefix) }} ${constraint.withVariablePrefix(variablePrefix).toSExpression()})\n" +
                     "     ${head.toSExpression(variablePrefix)}))"
         }
     }

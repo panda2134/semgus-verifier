@@ -26,15 +26,15 @@ fun Quantifier.Type.toSmtName(): String = when (this) {
     else -> throw IllegalArgumentException("cannot convert into smt name")
 }
 
-fun SmtTerm.toSExpression(variablePrefix: String = ""): String =
+fun SmtTerm.toSExpression(): String =
     when (this) {
         is SmtTerm.Quantifier -> "(${type.toSmtName()}" +
-                "(${bindings.joinToString(" ") { v -> "(${variablePrefix + v.name} ${v.type})" }})" +
-                child.toSExpression(variablePrefix) + ")"
-        is SmtTerm.Variable -> variablePrefix + name
+                "(${bindings.joinToString(" ") { v -> "(${v.name} ${v.type})" }})" +
+                child.toSExpression() + ")"
+        is SmtTerm.Variable -> name
         is SmtTerm.Application ->
             if (arguments.isEmpty()) name.name
-            else "($name ${arguments.joinToString(" ") { v -> v.term.toSExpression(variablePrefix) }})"
+            else "($name ${arguments.joinToString(" ") { v -> v.term.toSExpression() }})"
         is SmtTerm.CString -> "\"${value}\""
         is SmtTerm.CNumber -> value.toString()
         is SmtTerm.CBitVector -> "#x" + value.toByteArray().reversed().joinToString { v -> "%02x".format(v) }

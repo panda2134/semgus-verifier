@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e8ac0f73-d781-4910-8949-711e60015e55" name="Changes" comment="initial commit">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/logic/Formula.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtTermPrefix.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/kotlin/org/semgus/verifier/logic/TestFormula.kt" afterDir="false" />
+    <list default="true" id="e8ac0f73-d781-4910-8949-711e60015e55" name="Changes" comment="basic SMTLIB2 generation">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/Main.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SExpression.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SExpression.kt" afterDir="false" />
@@ -124,7 +121,8 @@
       <workItem from="1665314997997" duration="1462000" />
       <workItem from="1665366975922" duration="2399000" />
       <workItem from="1665482835507" duration="599000" />
-      <workItem from="1665503385630" duration="1844000" />
+      <workItem from="1665503385630" duration="2698000" />
+      <workItem from="1665599415532" duration="972000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1665333031398</created>
@@ -133,7 +131,14 @@
       <option name="project" value="LOCAL" />
       <updated>1665333031398</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="basic SMTLIB2 generation">
+      <created>1665598532110</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1665598532110</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -152,14 +157,15 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="initial commit" />
+    <MESSAGE value="basic SMTLIB2 generation" />
+    <option name="LAST_COMMIT_MESSAGE" value="basic SMTLIB2 generation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/walk/ProgramWalker.kt</url>
-          <line>18</line>
+          <line>19</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>

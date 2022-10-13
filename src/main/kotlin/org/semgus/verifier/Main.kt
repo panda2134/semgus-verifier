@@ -33,28 +33,11 @@ fun main(args: Array<String>) {
     assert((semOccurrence.arguments[programArgPos].term as Application).name.name == target.problem.targetName)
 
     val constraint = quantifiedChild.arguments.drop(1).first()
-    // 1. PRELUDE
+    println("; prelude")
     println("(set-logic HORN)")
     println()
-    // 2. DATATYPE INFO
-    println("(declare-datatypes () (")
-    for (nonTerm in target.problem.nonTerminals.values){
-        println("  (${nonTerm.name}")
-        for (rule in nonTerm.productions.values) {
-            if (rule.childNonTerminals.isEmpty()) {
-                println("    ${rule.operator}")
-            } else {
-                val argsWithName = rule.childNonTerminals.mapIndexed { i, n ->
-                    "(${rule.operator}_${nonTerm.name}_arg$i ${n.name})"
-                }
-                println("    (${rule.operator} ${argsWithName.joinToString(" ")})")
-            }
-        }
-        println("  )")
-    }
-    println("))")
-    println()
-    // 3. DECLARE RELATIONS
+
+    println("; relation declarations")
     println("(declare-rel Counterex (${fullConstraint.bindings.joinToString(" ") { v -> v.type.name }}))")
     val printedRules = mutableSetOf<String>()
     for (rule in instantiatedRules) {
@@ -63,7 +46,7 @@ fun main(args: Array<String>) {
         println("(declare-rel ${rule.head.name} (${rule.head.arguments.joinToString(" ") { v -> v.type.name }}))")
     }
     println()
-    // 4 & 5. SEMANTIC RULES (instantiated)
+    println("; semantic rules, instantiated with the given AST")
     for ((index, rule) in instantiatedRules.withIndex()) {
         val printed = mutableSetOf<String>()
         val printArgs = { xs: List<TypedVar> ->
@@ -82,7 +65,7 @@ fun main(args: Array<String>) {
         println()
     }
     println()
-    // 6. TARGET
+    println("; verification condition")
     val rootRuleSExpr = "($rootRuleName ${semOccurrence.arguments
         .filter { v -> v.type.name != target.problem.targetNonTerminal.name }
         .joinToString(" ") { v -> v.term.toSExpression() }
@@ -93,6 +76,6 @@ fun main(args: Array<String>) {
     println("(rule (=> (and $rootRuleSExpr (not ${constraint.term.toSExpression()}))\n" +
             "          (Counterex ${fullConstraint.bindings.joinToString(" ") { v -> v.name }}) ))")
     println()
-    // 7. CHECK
-    print("(query Counterex :print-certificate true)")
+    println("; query for counterexamples")
+    println("(query Counterex :print-certificate true)")
 }
