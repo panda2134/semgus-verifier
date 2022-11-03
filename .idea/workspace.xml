@@ -4,14 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e8ac0f73-d781-4910-8949-711e60015e55" name="Changes" comment="chore: cleanup output &amp; some refactoring">
-      <change afterPath="$PROJECT_DIR$/benchmarks/max2-exp-alt.sl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/benchmarks/max2-exp-alt.sl.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt" afterDir="false" />
+    <list default="true" id="e8ac0f73-d781-4910-8949-711e60015e55" name="Changes" comment="feat: extracting model from z3 output">
+      <change afterPath="$PROJECT_DIR$/benchmarks/max3-exp.sl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/benchmarks/max3-exp.sl.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/benchmarks/mul-by-while.sl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/benchmarks/mul-by-while.sl.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/benchmarks/plus-2-times-3.sl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/benchmarks/plus-2-times-3.sl.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/max2-exp-alt.sl.json" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/max2-exp-alt.sl.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SMTGenerator.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/walk/ProgramWalker.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/walk/ProgramWalker.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +65,7 @@
     "WebServerToolWindowFactoryState": "false",
     "jdk.selected.JAVA_MODULE": "16",
     "last_directory_selection": "/home/panda2134/Documents/semgus-verifier/src/main/kotlin/org/semgus/verifier",
-    "last_opened_file_path": "/home/panda2134/Documents/semgus-verifier/benchmarks",
+    "last_opened_file_path": "/home/panda2134/Documents/Semgus-Parser/SemgusParser",
     "nodejs_package_manager_path": "npm"
   },
   "keyToStringList": {
@@ -108,10 +112,15 @@
     <configuration name="MainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.semgus.verifier.MainKt" />
       <module name="semgus-verifier.main" />
+      <shortenClasspath name="NONE" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="Gradle.TestFormula.testParse0" />
+      <item itemvalue="Kotlin.MainKt" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Kotlin.MainKt" />
@@ -132,7 +141,10 @@
       <workItem from="1665366975922" duration="2399000" />
       <workItem from="1665482835507" duration="599000" />
       <workItem from="1665503385630" duration="2698000" />
-      <workItem from="1665599415532" duration="3130000" />
+      <workItem from="1665599415532" duration="3781000" />
+      <workItem from="1666014906978" duration="657000" />
+      <workItem from="1666613551485" duration="599000" />
+      <workItem from="1667210510487" duration="10734000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1665333031398</created>
@@ -155,7 +167,14 @@
       <option name="project" value="LOCAL" />
       <updated>1665636367062</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="feat: extracting model from z3 output">
+      <created>1665662991881</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1665662991881</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -176,16 +195,16 @@
     <MESSAGE value="initial commit" />
     <MESSAGE value="basic SMTLIB2 generation" />
     <MESSAGE value="chore: cleanup output &amp; some refactoring" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: cleanup output &amp; some refactoring" />
+    <MESSAGE value="feat: extracting model from z3 output" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: extracting model from z3 output" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/walk/ProgramWalker.kt</url>
-          <line>19</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.ClassCastException" package="java.lang" />
+          <option name="timeStamp" value="6" />
+        </breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>

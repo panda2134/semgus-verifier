@@ -38,6 +38,7 @@ class ProgramWalker(val program: AList, problem: SemgusProblem) {
     /**
      * extracts the semantics name used at the root of the program, without our renaming.
      */
+    @Suppress("unused")
     fun extractOriginalRootSemantics(): String {
         val token = program.entries.first()!! as AString
         val rule = rtgHelper.operatorMapping[token.value]!!
@@ -53,17 +54,30 @@ class ProgramWalker(val program: AList, problem: SemgusProblem) {
                 val op = node.entries.first()!! as AString
                 val rule = rtgHelper.operatorMapping[op.value] ?: throw IllegalArgumentException("no such operator! $op")
                 val childrenSemanticRuleNames = node.entries.drop(1).map { v -> traverse(v) } // drop the ctor, and traverse the rest
-                val newRuleName = rule.production.semanticRules.first()!!.head.name + "$$semanticCounter"
+                val oldRuleName = rule.production.semanticRules.first()!!.head.name
+                val newRuleName = "$oldRuleName$$semanticCounter"
                 for (sem in rule.production.semanticRules) {
                     val childVarMap = sem.childTermVars.mapIndexed { index, v -> Pair(v.name, index) }.toMap()
                     val newInstRule = InstantiatedSemanticRule(
                         head = RelationApp(newRuleName, sem.head.arguments.filter { v -> v.type.name != rule.nonTerminalName }),
                         bodyRelations = sem.bodyRelations.map { br ->
-                            val childVar = br.arguments.find { x -> x.name in childVarMap } ?: return@map br
-                            return@map RelationApp(
-                                childrenSemanticRuleNames[childVarMap[childVar.name]!!],
-                                br.arguments.filter { v -> v.name !in childVarMap }
-                            )
+                            val childVar = br.arguments.find { x -> x.name in childVarMap }
+                            return@map if (childVar != null) {
+                                RelationApp(
+                                    childrenSemanticRuleNames[childVarMap[childVar.name]!!],
+                                    br.arguments.filter { v -> v.name !in childVarMap }
+                                )
+                            } else {
+                                // assert: occurrence of current rule!
+                                assert(br.name == oldRuleName)
+                                val currentASTVar =
+                                    sem.head.arguments.first { v -> v.type.name == rule.nonTerminalName }
+                                assert(br.arguments.any { v -> v.type.name == currentASTVar.type.name && v.name == currentASTVar.name })
+                                RelationApp(
+                                    newRuleName,
+                                    br.arguments.filter { v -> v.name != currentASTVar.name }
+                                )
+                            }
                         },
                         constraint = sem.constraint,
                         variables = sem.variables.filter{ (_, v) ->

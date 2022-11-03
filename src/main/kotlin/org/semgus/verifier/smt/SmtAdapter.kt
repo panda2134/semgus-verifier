@@ -19,13 +19,14 @@ class SmtAdapter(
     val target: VerificationTarget,
     val rootRuleName: String,
     val instantiatedRules: List<ProgramWalker.InstantiatedSemanticRule>
-    ) {
+) {
     private val prelude = """
         (set-logic HORN)
         (set-option :fp.engine spacer)
         (set-option :fp.xform.slice false)
         (set-option :fp.xform.inline_linear false)
         (set-option :fp.xform.inline_eager false)
+        (set-option :fp.spacer.arith.solver 6)
         (set-option :parallel.enable true)
     """.trimIndent()
 
@@ -43,52 +44,87 @@ class SmtAdapter(
         val stderr = proc.errorStream.bufferedReader().readLines()
         val stdout = proc.inputStream.bufferedReader().readLines()
         if (stderr.isNotEmpty()) {
-            throw RuntimeException("Z3 error: \n ${stderr.joinToString("\n")}")
+            throw RuntimeException("Z3 error: \n${stderr.joinToString("\n")}")
         }
-        when (stdout.first()) {
-            "unsat" -> { return Pair(true, listOf()) }
-            "unknown" -> { throw RuntimeException("Z3 gives unknown model") }
+        if (stdout.any { x -> x.startsWith("(error ") }) {
+            throw RuntimeException("Z3 error: \n${stdout.joinToString("\n")}")
+        }
+        when (val out = stdout.first()) {
+            "unsat" -> {
+                return Pair(true, listOf())
+            }
+
+            "unknown" -> {
+                throw RuntimeException("Z3 gives unknown model")
+            }
+
             "sat" -> {
                 val sExpression = SexpFactory.parse(stdout.drop(1).joinToString("\n"))
-                val mp = extractModusPonens(sExpression)!!
-                var argsAsStrings: List<String>? = null
-                for (child in mp.iterator()) {
-                    if (child !is SexpList) continue
-                    val subChildren = child.iterator().asSequence().toList()
-                    val tactic = subChildren.first()
-                    if (tactic !is SexpString || tactic.toString() != "asserted") {
-                        continue
+                val letExpr = extractLet(sExpression)
+                val cex = letExpr.flatMap { v -> extractCounterExample(v.second) }
+                println(cex)
+                val argsAsStrings = cex.last().drop(1).map { v ->
+                    when (v) {
+                        is SexpString -> v.toString()
+                        is SexpList -> {
+                            if (v.length != 2 || v.first() !is SexpString || v.drop(1).first() !is SexpString)
+                                return@map v.toString()
+                            val p = v.first() as SexpString
+                            val n = v.drop(1).first() as SexpString
+                            if (p.toString() != "-") {
+                                return@map v.toString()
+                            }
+                            "-$n"
+                        }
+
+                        else -> throw IllegalStateException("unrecognized argument: $v")
                     }
-                    val impliesRule = (subChildren[1] as? SexpList) ?: continue
-                    val application = impliesRule.iterator().asSequence().toList()[1]
-                    val applicationList = (application as? SexpList) ?: continue
-                    val args = applicationList.iterator().asSequence().toList().drop(1)
-                    argsAsStrings = args.map { v -> (v as SexpString).toString() }
                 }
-                return Pair(false, cexArgSignature!!.zip(argsAsStrings!!).toList())
+                return Pair(false, cexArgSignature!!.zip(argsAsStrings).toList())
             }
-            else -> { throw IllegalArgumentException("malformed z3 result!") }
+
+            else -> {
+                println(out)
+                throw IllegalArgumentException("malformed z3 result!")
+            }
         }
     }
 
-    private fun extractModusPonens (input: Sexp): Sexp? {
-        if (input !is SexpList) return null
-        val children = input.iterator().asSequence().toList()
+    private fun extractCounterExample(input: Sexp): List<SexpList> {
+        if (input !is SexpList) return listOf()
+        val children = input.toList()
+        val f = children.first()
+        if (f is SexpString && f.toString() == "Counterex") {
+            return listOf(input)
+        }
+        return children.flatMap { v -> extractCounterExample(v) }
+    }
+
+    private fun extractLet(input: Sexp): List<Pair<String, Sexp>> {
+        if (input !is SexpList) return listOf()
+        val children = input.toList()
         val f = children.first()
         if (f !is SexpString) {
-            return null
+            return listOf()
         }
         return when (f.toString()) {
-            "let" -> extractModusPonens(children[2])
-            "mp" -> input
-            else -> null
+            "let" -> {
+                val declList = children[1] as SexpList
+                (declList.map { v ->
+                    val x = v as SexpList
+                    assert(x.length == 2)
+                    Pair((x[0] as SexpString).toString(), x[1] as Sexp)
+                }) + extractLet(children[2])
+            }
+
+            else -> listOf()
         }
     }
 
     fun generateSmtFile(): Path {
         val (fullConstraint, quantifiedChild, semOccurrence) = verifyAndExtract()
 
-        val path = createTempFile("semgus-verification", ".smt2")
+        val path = createTempFile("semgus-verification-", ".smt2")
         val w = path.toFile().printWriter()
 
         val constraint = quantifiedChild.arguments.drop(1).first()
@@ -134,8 +170,9 @@ class SmtAdapter(
         for (binding in fullConstraint.bindings) {
             w.println("(declare-var ${binding.name} ${binding.type})")
         }
-        w.println("(rule (=> (and $rootRuleSExpr (not ${constraint.term.toSExpression()}))\n" +
-                "          (Counterex ${fullConstraint.bindings.joinToString(" ") { v -> v.name }}) ))"
+        w.println(
+            "(rule (=> (and $rootRuleSExpr (not ${constraint.term.toSExpression()}))\n" +
+                    "          (Counterex ${fullConstraint.bindings.joinToString(" ") { v -> v.name }}) ))"
         )
         w.println()
         w.println("; query for counterexamples")
