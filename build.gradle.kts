@@ -16,6 +16,7 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
     implementation("com.github.SemGuS-git:Semgus-Java:1.0.2")
+    implementation("com.github.panda2134:illogical:68e82825fa")
     implementation("de.tu-dresden.inf.lat.jsexp:jsexp:0.2.2")
 }
 

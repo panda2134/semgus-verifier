@@ -4,18 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e8ac0f73-d781-4910-8949-711e60015e55" name="Changes" comment="feat: extracting model from z3 output">
-      <change afterPath="$PROJECT_DIR$/benchmarks/max3-exp.sl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/benchmarks/max3-exp.sl.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/benchmarks/mul-by-while.sl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/benchmarks/mul-by-while.sl.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/benchmarks/plus-2-times-3.sl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/benchmarks/plus-2-times-3.sl.json" afterDir="false" />
+    <list default="true" id="e8ac0f73-d781-4910-8949-711e60015e55" name="Changes" comment="fix: model extraction&#10;&#10;Due to inlining in Spacer, sometimes we cannot extract Counterex from the output. One may resort to using query!0. However, we cannot guarantee that the order of arguments in query!0 are the same as those in Counterex. Therefore, we have to disable inlining.&#10;&#10;Not that some cases involves nonlinear operators like `*`. We need to use a different arithmetic solver when handling these.">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/FOTransformer.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/max2-exp-alt.sl.json" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/max2-exp-alt.sl.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/mul-by-while.sl" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/mul-by-while.sl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/mul-by-while.sl.json" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/mul-by-while.sl.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/walk/ProgramWalker.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/walk/ProgramWalker.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,8 +28,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Kotlin Class" />
         <option value="Kotlin File" />
+        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
@@ -56,24 +51,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Project.color": "624816",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "jdk.selected.JAVA_MODULE": "16",
-    "last_directory_selection": "/home/panda2134/Documents/semgus-verifier/src/main/kotlin/org/semgus/verifier",
-    "last_opened_file_path": "/home/panda2134/Documents/Semgus-Parser/SemgusParser",
-    "nodejs_package_manager_path": "npm"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Project.color&quot;: &quot;624816&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;16&quot;,
+    &quot;last_directory_selection&quot;: &quot;/home/panda2134/Documents/semgus-verifier/src/main/kotlin/org/semgus/verifier&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/panda2134/Documents/Semgus-Parser/SemgusParser&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.new.ui&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "TEXT"
+  &quot;keyToStringList&quot;: {
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;TEXT&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/benchmarks" />
@@ -144,7 +145,12 @@
       <workItem from="1665599415532" duration="3781000" />
       <workItem from="1666014906978" duration="657000" />
       <workItem from="1666613551485" duration="599000" />
-      <workItem from="1667210510487" duration="10734000" />
+      <workItem from="1667210510487" duration="11765000" />
+      <workItem from="1670645095969" duration="599000" />
+      <workItem from="1672060990796" duration="2989000" />
+      <workItem from="1672129640653" duration="1790000" />
+      <workItem from="1672132935710" duration="678000" />
+      <workItem from="1672141039066" duration="5154000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1665333031398</created>
@@ -174,7 +180,14 @@
       <option name="project" value="LOCAL" />
       <updated>1665662991881</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="fix: model extraction&#10;&#10;Due to inlining in Spacer, sometimes we cannot extract Counterex from the output. One may resort to using query!0. However, we cannot guarantee that the order of arguments in query!0 are the same as those in Counterex. Therefore, we have to disable inlining.&#10;&#10;Not that some cases involves nonlinear operators like `*`. We need to use a different arithmetic solver when handling these.">
+      <created>1667455955152</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1667455955152</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -196,7 +209,8 @@
     <MESSAGE value="basic SMTLIB2 generation" />
     <MESSAGE value="chore: cleanup output &amp; some refactoring" />
     <MESSAGE value="feat: extracting model from z3 output" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: extracting model from z3 output" />
+    <MESSAGE value="fix: model extraction&#10;&#10;Due to inlining in Spacer, sometimes we cannot extract Counterex from the output. One may resort to using query!0. However, we cannot guarantee that the order of arguments in query!0 are the same as those in Counterex. Therefore, we have to disable inlining.&#10;&#10;Not that some cases involves nonlinear operators like `*`. We need to use a different arithmetic solver when handling these." />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: model extraction&#10;&#10;Due to inlining in Spacer, sometimes we cannot extract Counterex from the output. One may resort to using query!0. However, we cannot guarantee that the order of arguments in query!0 are the same as those in Counterex. Therefore, we have to disable inlining.&#10;&#10;Not that some cases involves nonlinear operators like `*`. We need to use a different arithmetic solver when handling these." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

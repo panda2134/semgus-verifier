@@ -186,6 +186,8 @@ class SmtAdapter(
         // only allow 1 constraint
         assert(target.problem.constraints.size == 1)
         val fullConstraint = target.problem.constraints.first() as SmtTerm.Quantifier
+        println(fullConstraint.toSExpression())
+        FOTransformer(fullConstraint)
         // only allow forall now
         assert(fullConstraint.type == SmtTerm.Quantifier.Type.FOR_ALL)
 

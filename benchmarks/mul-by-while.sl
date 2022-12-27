@@ -182,7 +182,7 @@
 ;;; Constraints - Logical Formula
 ;;;
 (constraint (forall ((x Int) (y Int) (x2 Int) (y2 Int) (z2 Int))
-                (=> (S.Sem mul_by_while x y 0 x2 y2 z2)
+                (=> (and (S.Sem mul_by_while x y 0 x2 y2 z2) (> x 0) (> y 0))
                     (= z2 (* x y)))))
 
 ;;;
