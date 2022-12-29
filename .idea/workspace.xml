@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e8ac0f73-d781-4910-8949-711e60015e55" name="Changes" comment="fix: model extraction&#10;&#10;Due to inlining in Spacer, sometimes we cannot extract Counterex from the output. One may resort to using query!0. However, we cannot guarantee that the order of arguments in query!0 are the same as those in Counterex. Therefore, we have to disable inlining.&#10;&#10;Not that some cases involves nonlinear operators like `*`. We need to use a different arithmetic solver when handling these.">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/FOTransformer.kt" afterDir="false" />
+    <list default="true" id="e8ac0f73-d781-4910-8949-711e60015e55" name="Changes" comment="basic transformation done">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/mul-by-while.sl" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/mul-by-while.sl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/mul-by-while.sl.json" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/mul-by-while.sl.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/FOTransformer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/FOTransformer.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -25,6 +23,16 @@
       <ProjectState />
     </projectState>
   </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view />
+      </state>
+    </system>
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -35,6 +43,11 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="dummy://scala-decompiled/Parser.decompiled.java" root0="SKIP_HIGHLIGHTING" />
+    <setting file="dummy://scala-decompiled/PartialQu.decompiled.java" root0="SKIP_HIGHLIGHTING" />
+    <setting file="dummy://scala-decompiled/PartialQu.decompiled.java" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -66,7 +79,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.new.ui&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -150,7 +163,8 @@
       <workItem from="1672060990796" duration="2989000" />
       <workItem from="1672129640653" duration="1790000" />
       <workItem from="1672132935710" duration="678000" />
-      <workItem from="1672141039066" duration="5154000" />
+      <workItem from="1672141039066" duration="5770000" />
+      <workItem from="1672315487299" duration="12223000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1665333031398</created>
@@ -187,7 +201,14 @@
       <option name="project" value="LOCAL" />
       <updated>1667455955152</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="basic transformation done">
+      <created>1672158792440</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1672158792440</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -210,7 +231,8 @@
     <MESSAGE value="chore: cleanup output &amp; some refactoring" />
     <MESSAGE value="feat: extracting model from z3 output" />
     <MESSAGE value="fix: model extraction&#10;&#10;Due to inlining in Spacer, sometimes we cannot extract Counterex from the output. One may resort to using query!0. However, we cannot guarantee that the order of arguments in query!0 are the same as those in Counterex. Therefore, we have to disable inlining.&#10;&#10;Not that some cases involves nonlinear operators like `*`. We need to use a different arithmetic solver when handling these." />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: model extraction&#10;&#10;Due to inlining in Spacer, sometimes we cannot extract Counterex from the output. One may resort to using query!0. However, we cannot guarantee that the order of arguments in query!0 are the same as those in Counterex. Therefore, we have to disable inlining.&#10;&#10;Not that some cases involves nonlinear operators like `*`. We need to use a different arithmetic solver when handling these." />
+    <MESSAGE value="basic transformation done" />
+    <option name="LAST_COMMIT_MESSAGE" value="basic transformation done" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -219,6 +241,19 @@
           <properties class="java.lang.ClassCastException" package="java.lang" />
           <option name="timeStamp" value="6" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt</url>
+          <line>192</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt</url>
+          <line>216</line>
+          <properties>
+            <option name="lambda-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>

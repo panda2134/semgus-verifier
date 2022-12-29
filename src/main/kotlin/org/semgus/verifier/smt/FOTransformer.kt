@@ -2,45 +2,69 @@ package org.semgus.verifier.smt
 
 import com.maxadamski.illogical.*
 import org.semgus.java.`object`.SmtTerm
+import scala.collection.immutable.Map
 import scala.jdk.javaapi.CollectionConverters
 import java.lang.RuntimeException
+import java.util.*
 
-/**
- * Currently, we do not support = for boolean values.
- * That's because parsing this requires type deduction, which is the next goal
- *
- */
-class FOTransformer(term: SmtTerm) {
-    private var reverseMapping = mutableMapOf<String, String>()
-    val illogicalForm: Form
+class FOTransformer() {
+    private var illogicalForm: Form? = null
+    var declaredRelation = mapOf<String, Optional<List<String>>>()
+    var declaredVars = mapOf<String, String>()
 
-    init {
-        illogicalForm = toIllogicalTerm(term) as Form
-        println(`TextFormatter$`.`MODULE$`.fmt(illogicalForm))
-        val skolem = `Skolemizer$`.`MODULE$`.skolemized(illogicalForm)
-        fun f(x: Form): Form =
-            when (x) {
-                is Qu -> f(x.form())
-                else -> x
+    private fun skolemize(form: Form): Pair<Form, Set<Term>> {
+        val partialPNF = form.simplifying().partialPNF()
+        val skolemSubMethod = `Skolemizer$`.`MODULE$`::class.java.getDeclaredMethod("skolemSub", scala.collection.immutable.List::class.java)
+        skolemSubMethod.isAccessible = true
+        val subs = skolemSubMethod.invoke(`Skolemizer$`.`MODULE$`, partialPNF._2) as scala.collection.immutable.Set<Sub>?
+        val result = partialPNF._1.cnf().substituting(subs)
+        // TODO: add all vars in partialPnf prefix into the term set returned
+        val newTerms = CollectionConverters.asJava(subs!!.map { x -> x.t() }.toSet<Term>())
+        return Pair(result, newTerms as Set<Term>)
+    }
+
+    private fun findDNFClauses(x: Form): List<Form> =
+        when (x) {
+            is Op -> {
+                if (x.token() != `OR$`.`MODULE$`) {
+                    listOf(x)
+                } else {
+                    findDNFClauses(x.leftForm()) + findDNFClauses(x.rightForm())
+                }
             }
-        val core = Not(f(skolem)).simplifying()
+            else -> listOf(x)
+        }
+
+    fun toDNFClauseList(term: SmtTerm): Pair<List<Form>, Set<Term>> {
+        illogicalForm = toIllogicalTerm(term) as Form
+        val mapWrapper = CollectionConverters.asScala(declaredVars.map { (k, v) -> Pair(k, ConcreteType(v) as NodeType) }.toMap())
+        val ctx = Map.from(mapWrapper)
+
+        illogicalForm!!.typeCheck(ctx)
+        println(`TextFormatter$`.`MODULE$`.fmt(illogicalForm))
+        val (skolem, subs) = this.skolemize(illogicalForm!!)
+        skolem.typeCheck(ctx)
+        val partialPNF = skolem.partialPNF()
+        val core = Not(partialPNF._1).simplifying()
+        val dnf = core.dnf()
         println(`TextFormatter$`.`MODULE$`.fmt(core))
+        println(`TextFormatter$`.`MODULE$`.fmt(dnf))
+
+        return Pair(findDNFClauses(dnf), subs)
     }
 
     private fun toIllogicalTerm(term: SmtTerm, useFunc: Boolean = false): Node =
         when (term) {
             is SmtTerm.Quantifier -> term.bindings.map { v ->
-                val newName = "var${reverseMapping.size}"
-                reverseMapping[newName] = v.name
-                newName
-            }.foldRight(toIllogicalTerm(term.child) as Form) { s, form ->
+                Pair(v.type.name, v.type.name)
+            }.foldRight(toIllogicalTerm(term.child) as Form) { (s, ty), form ->
                 Qu(
                     if (term.type == SmtTerm.Quantifier.Type.EXISTS) {
                         `EXISTS$`.`MODULE$`
                     } else {
                         `FORALL$`.`MODULE$`
                     },
-                    Var(s),
+                    Var(s, ConcreteType(ty)),
                     form
                 )
             }
@@ -55,7 +79,7 @@ class FOTransformer(term: SmtTerm) {
                     when(term.name.name) {
                         "and" -> args.reduce {s, t -> Op(s, `AND$`.`MODULE$`, t) }
                         "or" -> args.reduce {s, t -> Op(s, `OR$`.`MODULE$`, t) }
-                        "=>" -> args.reduce {s, t -> Op(s, `IMP$`.`MODULE$`, t) }
+                        "=>" -> args.reduceRight {s, t -> Op(s, `IMP$`.`MODULE$`, t) }
                         "not" -> {
                             assert(args.size == 1)
                             Not(args.first())
@@ -66,39 +90,38 @@ class FOTransformer(term: SmtTerm) {
                     val args = term.arguments.map { v ->
                         toIllogicalTerm(v.term, true) as Term
                     }
+                    // working around a bug in semgus-parser that treats (mul-by-while) as a predicate
                     if (term.arguments.isNotEmpty()) {
-                        val newName = "${if (useFunc) "func" else "pred"}${reverseMapping.size}"
-                        reverseMapping[newName] = term.name.name
-                        if (useFunc) Func(newName,  CollectionConverters.asScala(args).toList())
-                        else Pred(newName, CollectionConverters.asScala(args).toList())
-                    } else {
-                        val newName = "var${reverseMapping.size}"
-                        reverseMapping[newName] = term.name.name
-                        Var(newName)
+                        val typing = declaredRelation[term.name.name]
+                        if (!useFunc && typing == null) {
+                            throw IllegalArgumentException("unknown predicate ${term.name.name}")
+                        }
+
+                        // TODO: consider typing here
+                        if (useFunc) Func(
+                            term.name.name,
+                            CollectionConverters.asScala(args).toList(),
+                            scala.Option.apply(null)
+                        )
+                        else Pred(term.name.name, CollectionConverters.asScala(args).toList(), scala.Option.apply(null))
+                    }  else {
+                        Var(term.name.name, `AnyType$`.`MODULE$`)
                     }
                 }
             }
             is SmtTerm.Variable -> {
-                val newName = "var${reverseMapping.size}"
-                reverseMapping[newName] = term.name
-                Var(newName)
+                Var(term.name, ConcreteType(term.type.name))
             }
             is SmtTerm.CString -> {
-                val newName = "@s${reverseMapping.size}"
-                reverseMapping[newName] = term.value
-                Con(newName)
+                Con("\"${term.value}\"", ConcreteType("String"))
             }
             is SmtTerm.CNumber -> {
-                val newName = "@n${reverseMapping.size}"
-                reverseMapping[newName] = term.value.toString()
-                Con(newName)
+                Con(term.value.toString(), ConcreteType("Int"))
             }
             is SmtTerm.CBitVector -> {
                 val lit =
                     "#x" + term.value.toByteArray().reversed().joinToString { v -> "%02x".format(v) }
-                val newName = "@n${reverseMapping.size}"
-                reverseMapping[newName] = lit
-                Con(newName)
+                Con(lit, ConcreteType("(_ BitVec ${term.size})"))
             }
 
             else -> throw IllegalArgumentException("cannot convert this into s-expr")

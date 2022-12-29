@@ -1,5 +1,6 @@
 package org.semgus.verifier.smt
 
+import com.maxadamski.illogical.*
 import de.tudresden.inf.lat.jsexp.Sexp
 import de.tudresden.inf.lat.jsexp.SexpFactory
 import de.tudresden.inf.lat.jsexp.SexpList
@@ -8,10 +9,12 @@ import org.semgus.verifier.frontend.VerificationTarget
 import org.semgus.verifier.walk.ProgramWalker
 import org.semgus.java.`object`.SmtTerm
 import org.semgus.java.`object`.TypedVar
+import scala.jdk.javaapi.CollectionConverters
 import java.nio.file.Path
 import java.lang.ProcessBuilder
 import java.lang.ProcessBuilder.Redirect
 import java.lang.RuntimeException
+import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.io.path.createTempFile
 
@@ -122,12 +125,22 @@ class SmtAdapter(
     }
 
     fun generateSmtFile(): Path {
-        val (fullConstraint, quantifiedChild, semOccurrence) = verifyAndExtract()
+        assert(target.problem.constraints.size == 1)
+        val fullConstraint = target.problem.constraints.first() as SmtTerm.Quantifier
+
+        val declaredRelation = mutableMapOf(
+            Pair("=", Optional.empty<List<String>>()), // temporarily treat = for booleans as predicate, not logical equivalent
+            Pair("distinct", Optional.empty<List<String>>()),
+            Pair(">", Optional.empty<List<String>>()), // builtins
+            Pair("<", Optional.empty<List<String>>()),
+            Pair(">=", Optional.empty<List<String>>()),
+            Pair("<=", Optional.empty<List<String>>()),
+        )
+        val declaredVars = mutableMapOf<String, String>()
 
         val path = createTempFile("semgus-verification-", ".smt2")
         val w = path.toFile().printWriter()
 
-        val constraint = quantifiedChild.arguments.drop(1).first()
         w.println("; prelude")
         w.println(prelude)
         w.println()
@@ -135,11 +148,13 @@ class SmtAdapter(
         w.println("; relation declarations")
         cexArgSignature = fullConstraint.bindings
         w.println("(declare-rel Counterex (${fullConstraint.bindings.joinToString(" ") { v -> v.type.name }}))")
+        declaredRelation["Counterex"] = Optional.of(fullConstraint.bindings.map { v -> v.type.name })
         val printedRules = mutableSetOf<String>()
         for (rule in instantiatedRules) {
             if (rule.head.name in printedRules) continue
             printedRules.add(rule.head.name)
             w.println("(declare-rel ${rule.head.name} (${rule.head.arguments.joinToString(" ") { v -> v.type.name }}))")
+            declaredRelation[rule.head.name] = Optional.of(rule.head.arguments.map { v -> v.type.name })
         }
         w.println()
         w.println("; semantic rules, instantiated with the given AST")
@@ -151,6 +166,7 @@ class SmtAdapter(
                     if (name in printed) continue
                     printed.add(name)
                     w.println("(declare-var $name ${arg.type})")
+                    declaredVars[name] = arg.type.name
                 }
             }
             for (premise in rule.bodyRelations) {
@@ -162,16 +178,41 @@ class SmtAdapter(
         }
         w.println()
         w.println("; verification condition")
-        val rootRuleSExpr = "($rootRuleName ${
-            semOccurrence.arguments
-                .filter { v -> v.type.name != target.problem.targetNonTerminal.name }
-                .joinToString(" ") { v -> v.term.toSExpression() }
-        })"
+
+        val semRelationHead = target.problem.targetNonTerminal.productions.entries.first()
+            .value.semanticRules.first()!!.head
+        val foTransformer = FOTransformer().apply {
+            this.declaredRelation = declaredRelation + Pair(semRelationHead.name, Optional.empty()) // define S.Sem although it will then be substituted
+        }
+        val (form, subs) = foTransformer.toDNFClauseList(fullConstraint)
+
+        assert(form.size == 1) { -> "Currently do not support multiple DNF clauses. Will be done later" }
+
+        val formInstantiated = SexprFormatter.formatted(form.first()).replace(target.problem.targetName, "")
+            .replace(semRelationHead.name, rootRuleName)
+            //substituteSemApplication(form.first(), semRelationHead.name, target.problem.targetNonTerminal.name)
         for (binding in fullConstraint.bindings) {
             w.println("(declare-var ${binding.name} ${binding.type})")
         }
+        for (n in subs) {
+            when (n) {
+                is Var -> {
+                    w.println("(declare-var ${n.name()} ${n.typing()})")
+                }
+                is Con -> {
+                    w.println("(declare-var ${n.name()} ${n.typing()})")
+                }
+                is Func -> {
+                    assert(n.signature().isDefined)
+                    val argTypes = CollectionConverters.asJava(n.signature().get()._1)
+                    val rtnType = n.signature().get()._2
+                    w.println("(declare-fun ${n.name()} (${argTypes.joinToString(" ") { v -> v.toString() }}) ${rtnType.toString()})")
+                }
+                else -> throw IllegalStateException("not possible with pnf & skolemization!")
+            }
+        }
         w.println(
-            "(rule (=> (and $rootRuleSExpr (not ${constraint.term.toSExpression()}))\n" +
+            "(rule (=> $formInstantiated\n" +
                     "          (Counterex ${fullConstraint.bindings.joinToString(" ") { v -> v.name }}) ))"
         )
         w.println()
@@ -182,29 +223,29 @@ class SmtAdapter(
         return path
     }
 
-    private fun verifyAndExtract(): Triple<SmtTerm.Quantifier, SmtTerm.Application, SmtTerm.Application> {
-        // only allow 1 constraint
-        assert(target.problem.constraints.size == 1)
-        val fullConstraint = target.problem.constraints.first() as SmtTerm.Quantifier
-        println(fullConstraint.toSExpression())
-        FOTransformer(fullConstraint)
-        // only allow forall now
-        assert(fullConstraint.type == SmtTerm.Quantifier.Type.FOR_ALL)
-
-        // inner parts of the quantified expression
-        val quantifiedChild = fullConstraint.child as SmtTerm.Application
-        assert(quantifiedChild.name.name == "=>" && quantifiedChild.arguments.size == 2)
-        val semOccurrence = quantifiedChild.arguments.first()!!.term as SmtTerm.Application
-
-        // extract the premise, which should be a semantic relation application
-        val semRelationHead = target.problem.targetNonTerminal.productions.entries.first()
-            .value.semanticRules.first()!!.head
-        assert(semOccurrence.name.name == semRelationHead.name)
-        val programArgPos =
-            semRelationHead.arguments.indexOfFirst { v -> v.type.name == target.problem.targetNonTerminal.name }
-        // ensure that the semantic relation is applied on the synthesis target
-        assert((semOccurrence.arguments[programArgPos].term as SmtTerm.Application).name.name == target.problem.targetName)
-
-        return Triple(fullConstraint, quantifiedChild, semOccurrence)
-    }
+//    private fun verifyAndExtract(): Triple<SmtTerm.Quantifier, SmtTerm.Application, SmtTerm.Application> {
+//        // only allow 1 constraint
+//        assert(target.problem.constraints.size == 1)
+//        val fullConstraint = target.problem.constraints.first() as SmtTerm.Quantifier
+//        println(fullConstraint.toSExpression())
+//        FOTransformer(fullConstraint)
+//        // only allow forall now
+//        assert(fullConstraint.type == SmtTerm.Quantifier.Type.FOR_ALL)
+//
+//        // inner parts of the quantified expression
+//        val quantifiedChild = fullConstraint.child as SmtTerm.Application
+//        assert(quantifiedChild.name.name == "=>" && quantifiedChild.arguments.size == 2)
+//        val semOccurrence = quantifiedChild.arguments.first()!!.term as SmtTerm.Application
+//
+//        // extract the premise, which should be a semantic relation application
+//        val semRelationHead = target.problem.targetNonTerminal.productions.entries.first()
+//            .value.semanticRules.first()!!.head
+//        assert(semOccurrence.name.name == semRelationHead.name)
+//        val programArgPos =
+//            semRelationHead.arguments.indexOfFirst { v -> v.type.name == target.problem.targetNonTerminal.name }
+//        // ensure that the semantic relation is applied on the synthesis target
+//        assert((semOccurrence.arguments[programArgPos].term as SmtTerm.Application).name.name == target.problem.targetName)
+//
+//        return Triple(fullConstraint, quantifiedChild, semOccurrence)
+//    }
 }
