@@ -41,14 +41,16 @@ class FOTransformer() {
         val ctx = Map.from(mapWrapper)
 
         illogicalForm!!.typeCheck(ctx)
-        println(`TextFormatter$`.`MODULE$`.fmt(illogicalForm))
+        println("[original] ${`SexprFormatter$`.`MODULE$`.formatted(illogicalForm)}")
         val (skolem, subs) = this.skolemize(illogicalForm!!)
         skolem.typeCheck(ctx)
+        println("[skolem] ${`SexprFormatter$`.`MODULE$`.formatted(skolem)}")
         val partialPNF = skolem.partialPNF()
+        println("[partialPNF] ${`SexprFormatter$`.`MODULE$`.formatted(partialPNF._1)}")
         val core = Not(partialPNF._1).simplifying()
         val dnf = core.dnf()
-        println(`TextFormatter$`.`MODULE$`.fmt(core))
-        println(`TextFormatter$`.`MODULE$`.fmt(dnf))
+        println("[core] ${`SexprFormatter$`.`MODULE$`.formatted(core)}")
+        println("[dnf] ${`SexprFormatter$`.`MODULE$`.formatted(dnf)}")
 
         return Pair(findDNFClauses(dnf), subs)
     }
@@ -56,7 +58,7 @@ class FOTransformer() {
     private fun toIllogicalTerm(term: SmtTerm, useFunc: Boolean = false): Node =
         when (term) {
             is SmtTerm.Quantifier -> term.bindings.map { v ->
-                Pair(v.type.name, v.type.name)
+                Pair(v.name, v.type.name)
             }.foldRight(toIllogicalTerm(term.child) as Form) { (s, ty), form ->
                 Qu(
                     if (term.type == SmtTerm.Quantifier.Type.EXISTS) {

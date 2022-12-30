@@ -38,7 +38,7 @@ class SmtAdapter(
     /**
      * @return (program verified?, counterexamples)
      */
-    fun runZ3AndParseModel(path: Path): Pair<Boolean, List<Pair<TypedVar, String>>> {
+    fun runZ3AndParseModel(path: Path): Pair<Boolean, List<Pair<TypedVar, String>>?> {
         val proc = ProcessBuilder(listOf("z3", path.toAbsolutePath().toString()))
             .redirectOutput(Redirect.PIPE)
             .redirectError(Redirect.PIPE)
@@ -54,7 +54,7 @@ class SmtAdapter(
         }
         when (val out = stdout.first()) {
             "unsat" -> {
-                return Pair(true, listOf())
+                return Pair(true, null)
             }
 
             "unknown" -> {
@@ -65,7 +65,7 @@ class SmtAdapter(
                 val sExpression = SexpFactory.parse(stdout.drop(1).joinToString("\n"))
                 val letExpr = extractLet(sExpression)
                 val cex = letExpr.flatMap { v -> extractCounterExample(v.second) }
-                println(cex)
+//                println(cex)
                 val argsAsStrings = cex.last().drop(1).map { v ->
                     when (v) {
                         is SexpString -> v.toString()
@@ -124,8 +124,9 @@ class SmtAdapter(
         }
     }
 
-    fun generateSmtFile(): Path {
+    fun generateSmtFile(): List<Path> {
         assert(target.problem.constraints.size == 1)
+
         val fullConstraint = target.problem.constraints.first() as SmtTerm.Quantifier
 
         val declaredRelation = mutableMapOf(
@@ -138,26 +139,27 @@ class SmtAdapter(
         )
         val declaredVars = mutableMapOf<String, String>()
 
-        val path = createTempFile("semgus-verification-", ".smt2")
-        val w = path.toFile().printWriter()
+        val smtFileParts = mutableListOf<String>()
 
-        w.println("; prelude")
-        w.println(prelude)
-        w.println()
+        fun addLine (line: String = "") { smtFileParts.add(line) }
 
-        w.println("; relation declarations")
+        addLine("; prelude")
+        addLine(prelude)
+        addLine()
+
+        addLine("; relation declarations")
         cexArgSignature = fullConstraint.bindings
-        w.println("(declare-rel Counterex (${fullConstraint.bindings.joinToString(" ") { v -> v.type.name }}))")
+        addLine("(declare-rel Counterex (${fullConstraint.bindings.joinToString(" ") { v -> v.type.name }}))")
         declaredRelation["Counterex"] = Optional.of(fullConstraint.bindings.map { v -> v.type.name })
         val printedRules = mutableSetOf<String>()
         for (rule in instantiatedRules) {
             if (rule.head.name in printedRules) continue
             printedRules.add(rule.head.name)
-            w.println("(declare-rel ${rule.head.name} (${rule.head.arguments.joinToString(" ") { v -> v.type.name }}))")
+            addLine("(declare-rel ${rule.head.name} (${rule.head.arguments.joinToString(" ") { v -> v.type.name }}))")
             declaredRelation[rule.head.name] = Optional.of(rule.head.arguments.map { v -> v.type.name })
         }
-        w.println()
-        w.println("; semantic rules, instantiated with the given AST")
+        addLine()
+        addLine("; semantic rules, instantiated with the given AST")
         for ((index, rule) in instantiatedRules.withIndex()) {
             val printed = mutableSetOf<String>()
             val printArgs = { xs: List<TypedVar> ->
@@ -165,7 +167,7 @@ class SmtAdapter(
                     val name = "$${index}$${arg.name}"
                     if (name in printed) continue
                     printed.add(name)
-                    w.println("(declare-var $name ${arg.type})")
+                    addLine("(declare-var $name ${arg.type})")
                     declaredVars[name] = arg.type.name
                 }
             }
@@ -173,11 +175,11 @@ class SmtAdapter(
                 printArgs(premise.arguments)
             }
             printArgs(rule.head.arguments)
-            w.println(rule.toSExpression("$${index}$"))
-            w.println()
+            addLine(rule.toSExpression("$${index}$"))
+            addLine()
         }
-        w.println()
-        w.println("; verification condition")
+        addLine()
+        addLine("; verification condition")
 
         val semRelationHead = target.problem.targetNonTerminal.productions.entries.first()
             .value.semanticRules.first()!!.head
@@ -185,42 +187,46 @@ class SmtAdapter(
             this.declaredRelation = declaredRelation + Pair(semRelationHead.name, Optional.empty()) // define S.Sem although it will then be substituted
         }
         val (form, subs) = foTransformer.toDNFClauseList(fullConstraint)
+//        form.forEach { x -> println(`SexprFormatter$`.`MODULE$`.formatted(x)) }
 
-        assert(form.size == 1) { -> "Currently do not support multiple DNF clauses. Will be done later" }
+        return form.withIndex().map { (index, formClause) ->
+            val path = createTempFile("semgus-verification-${target.problem.targetName}-${index}", ".smt2")
+            val w = path.toFile().printWriter()
+            w.println(smtFileParts.joinToString("\n"))
 
-        val formInstantiated = SexprFormatter.formatted(form.first()).replace(target.problem.targetName, "")
-            .replace(semRelationHead.name, rootRuleName)
-            //substituteSemApplication(form.first(), semRelationHead.name, target.problem.targetNonTerminal.name)
-        for (binding in fullConstraint.bindings) {
-            w.println("(declare-var ${binding.name} ${binding.type})")
-        }
-        for (n in subs) {
-            when (n) {
-                is Var -> {
-                    w.println("(declare-var ${n.name()} ${n.typing()})")
-                }
-                is Con -> {
-                    w.println("(declare-var ${n.name()} ${n.typing()})")
-                }
-                is Func -> {
-                    assert(n.signature().isDefined)
-                    val argTypes = CollectionConverters.asJava(n.signature().get()._1)
-                    val rtnType = n.signature().get()._2
-                    w.println("(declare-fun ${n.name()} (${argTypes.joinToString(" ") { v -> v.toString() }}) ${rtnType.toString()})")
-                }
-                else -> throw IllegalStateException("not possible with pnf & skolemization!")
+            val formInstantiated = SexprFormatter.formatted(formClause).replace(target.problem.targetName, "")
+                .replace(semRelationHead.name, rootRuleName)
+            for (binding in fullConstraint.bindings) {
+                w.println("(declare-var ${binding.name} ${binding.type})")
             }
+            for (n in subs) {
+                when (n) {
+                    is Var -> {
+                        w.println("(declare-var ${n.name()} ${n.typing()})")
+                    }
+                    is Con -> {
+                        w.println("(declare-var ${n.name()} ${n.typing()})")
+                    }
+                    is Func -> {
+                        assert(n.signature().isDefined)
+                        val argTypes = CollectionConverters.asJava(n.signature().get()._1)
+                        val rtnType = n.signature().get()._2
+                        w.println("(declare-fun ${n.name()} (${argTypes.joinToString(" ") { v -> v.toString() }}) ${rtnType.toString()})")
+                    }
+                    else -> throw IllegalStateException("not possible with pnf & skolemization!")
+                }
+            }
+            val verificationCond =
+                "(rule (=> $formInstantiated\n" +
+                        "          (Counterex ${fullConstraint.bindings.joinToString(" ") { v -> v.name }}) ))"
+//            println(verificationCond)
+            w.println(verificationCond)
+            w.println()
+            w.println("; query for counterexamples")
+            w.println("(query Counterex :print-certificate true)")
+            w.close()
+            path
         }
-        w.println(
-            "(rule (=> $formInstantiated\n" +
-                    "          (Counterex ${fullConstraint.bindings.joinToString(" ") { v -> v.name }}) ))"
-        )
-        w.println()
-        w.println("; query for counterexamples")
-        w.println("(query Counterex :print-certificate true)")
-        w.close()
-
-        return path
     }
 
 //    private fun verifyAndExtract(): Triple<SmtTerm.Quantifier, SmtTerm.Application, SmtTerm.Application> {
