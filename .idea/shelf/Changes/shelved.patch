@@ -1,0 +1,528 @@
+Index: build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import org.jetbrains.kotlin.gradle.tasks.KotlinCompile\n\nplugins {\n    kotlin(\"jvm\") version \"1.7.10\"\n    application\n}\n\ngroup = \"org.semgus.verifier\"\nversion = \"1.0-SNAPSHOT\"\n\nrepositories {\n    mavenCentral()\n    maven(\"https://jitpack.io\") { name = \"Jitpack\" }\n}\n\ndependencies {\n    testImplementation(kotlin(\"test\"))\n    implementation(\"com.github.SemGuS-git:Semgus-Java:1.0.2\")\n    implementation(\"com.github.panda2134:illogical:68e82825fa\")\n    implementation(\"de.tu-dresden.inf.lat.jsexp:jsexp:0.2.2\")\n}\n\ntasks.test {\n    useJUnitPlatform()\n}\n\ntasks.withType<KotlinCompile> {\n    kotlinOptions.jvmTarget = \"1.8\"\n}\n\napplication {\n    mainClass.set(\"MainKt\")\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/build.gradle.kts b/build.gradle.kts
+--- a/build.gradle.kts	(revision 1d5f0481ec449b21a4c643e59f87b204a1d6906d)
++++ b/build.gradle.kts	(date 1672333551870)
+@@ -16,7 +16,7 @@
+ dependencies {
+     testImplementation(kotlin("test"))
+     implementation("com.github.SemGuS-git:Semgus-Java:1.0.2")
+-    implementation("com.github.panda2134:illogical:68e82825fa")
++    implementation("com.github.panda2134:illogical:3f9781a127")
+     implementation("de.tu-dresden.inf.lat.jsexp:jsexp:0.2.2")
+ }
+ 
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"e8ac0f73-d781-4910-8949-711e60015e55\" name=\"Changes\" comment=\"fix: model extraction&#10;&#10;Due to inlining in Spacer, sometimes we cannot extract Counterex from the output. One may resort to using query!0. However, we cannot guarantee that the order of arguments in query!0 are the same as those in Counterex. Therefore, we have to disable inlining.&#10;&#10;Not that some cases involves nonlinear operators like `*`. We need to use a different arithmetic solver when handling these.\">\n      <change afterPath=\"$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/FOTransformer.kt\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/benchmarks/mul-by-while.sl\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/benchmarks/mul-by-while.sl\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/benchmarks/mul-by-while.sl.json\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/benchmarks/mul-by-while.sl.json\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/build.gradle.kts\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/build.gradle.kts\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"CodeStyleSettingsInfer\">\n    <option name=\"done\" value=\"true\" />\n  </component>\n  <component name=\"ExternalProjectsData\">\n    <projectState path=\"$PROJECT_DIR$\">\n      <ProjectState />\n    </projectState>\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"Kotlin File\" />\n        <option value=\"Kotlin Class\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"MarkdownSettingsMigration\">\n    <option name=\"stateVersion\" value=\"1\" />\n  </component>\n  <component name=\"ProblemsViewState\">\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\n  </component>\n  <component name=\"ProjectCodeStyleSettingsMigration\">\n    <option name=\"version\" value=\"2\" />\n  </component>\n  <component name=\"ProjectId\" id=\"2FU35KkvMERxnwmpYzDDFHKMgHx\" />\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\">{\n  &quot;keyToString&quot;: {\n    &quot;Project.color&quot;: &quot;624816&quot;,\n    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\n    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,\n    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,\n    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;16&quot;,\n    &quot;last_directory_selection&quot;: &quot;/home/panda2134/Documents/semgus-verifier/src/main/kotlin/org/semgus/verifier&quot;,\n    &quot;last_opened_file_path&quot;: &quot;/home/panda2134/Documents/Semgus-Parser/SemgusParser&quot;,\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\n    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.new.ui&quot;,\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\n  },\n  &quot;keyToStringList&quot;: {\n    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [\n      &quot;TEXT&quot;\n    ]\n  }\n}</component>\n  <component name=\"RecentsManager\">\n    <key name=\"CopyFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/benchmarks\" />\n    </key>\n    <key name=\"MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY\">\n      <recent name=\"org.semgus.verifier.smt\" />\n    </key>\n    <key name=\"MoveClassesOrPackagesDialog.RECENTS_KEY\">\n      <recent name=\"org.semgus.verifier\" />\n    </key>\n  </component>\n  <component name=\"RunManager\" selected=\"Kotlin.MainKt\">\n    <configuration name=\"TestFormula.testParse0\" type=\"GradleRunConfiguration\" factoryName=\"Gradle\" temporary=\"true\">\n      <ExternalSystemSettings>\n        <option name=\"executionName\" />\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\n        <option name=\"externalSystemIdString\" value=\"GRADLE\" />\n        <option name=\"scriptParameters\" value=\"\" />\n        <option name=\"taskDescriptions\">\n          <list />\n        </option>\n        <option name=\"taskNames\">\n          <list>\n            <option value=\":test\" />\n            <option value=\"--tests\" />\n            <option value=\"&quot;org.semgus.verifier.logic.TestFormula.testParse0&quot;\" />\n          </list>\n        </option>\n        <option name=\"vmOptions\" />\n      </ExternalSystemSettings>\n      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>\n      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>\n      <DebugAllEnabled>false</DebugAllEnabled>\n      <method v=\"2\" />\n    </configuration>\n    <configuration name=\"MainKt\" type=\"JetRunConfigurationType\" temporary=\"true\" nameIsGenerated=\"true\">\n      <option name=\"MAIN_CLASS_NAME\" value=\"org.semgus.verifier.MainKt\" />\n      <module name=\"semgus-verifier.main\" />\n      <shortenClasspath name=\"NONE\" />\n      <method v=\"2\">\n        <option name=\"Make\" enabled=\"true\" />\n      </method>\n    </configuration>\n    <list>\n      <item itemvalue=\"Gradle.TestFormula.testParse0\" />\n      <item itemvalue=\"Kotlin.MainKt\" />\n    </list>\n    <recent_temporary>\n      <list>\n        <item itemvalue=\"Kotlin.MainKt\" />\n        <item itemvalue=\"Gradle.TestFormula.testParse0\" />\n      </list>\n    </recent_temporary>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"e8ac0f73-d781-4910-8949-711e60015e55\" name=\"Changes\" comment=\"\" />\n      <created>1664532653081</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1664532653081</updated>\n      <workItem from=\"1664532654391\" duration=\"17565000\" />\n      <workItem from=\"1665314997997\" duration=\"1462000\" />\n      <workItem from=\"1665366975922\" duration=\"2399000\" />\n      <workItem from=\"1665482835507\" duration=\"599000\" />\n      <workItem from=\"1665503385630\" duration=\"2698000\" />\n      <workItem from=\"1665599415532\" duration=\"3781000\" />\n      <workItem from=\"1666014906978\" duration=\"657000\" />\n      <workItem from=\"1666613551485\" duration=\"599000\" />\n      <workItem from=\"1667210510487\" duration=\"11765000\" />\n      <workItem from=\"1670645095969\" duration=\"599000\" />\n      <workItem from=\"1672060990796\" duration=\"2989000\" />\n      <workItem from=\"1672129640653\" duration=\"1790000\" />\n      <workItem from=\"1672132935710\" duration=\"678000\" />\n      <workItem from=\"1672141039066\" duration=\"5154000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"initial commit\">\n      <created>1665333031398</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1665333031398</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"basic SMTLIB2 generation\">\n      <created>1665598532110</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1665598532110</updated>\n    </task>\n    <task id=\"LOCAL-00003\" summary=\"chore: cleanup output &amp; some refactoring\">\n      <created>1665636367062</created>\n      <option name=\"number\" value=\"00003\" />\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1665636367062</updated>\n    </task>\n    <task id=\"LOCAL-00004\" summary=\"feat: extracting model from z3 output\">\n      <created>1665662991881</created>\n      <option name=\"number\" value=\"00004\" />\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1665662991881</updated>\n    </task>\n    <task id=\"LOCAL-00005\" summary=\"fix: model extraction&#10;&#10;Due to inlining in Spacer, sometimes we cannot extract Counterex from the output. One may resort to using query!0. However, we cannot guarantee that the order of arguments in query!0 are the same as those in Counterex. Therefore, we have to disable inlining.&#10;&#10;Not that some cases involves nonlinear operators like `*`. We need to use a different arithmetic solver when handling these.\">\n      <created>1667455955152</created>\n      <option name=\"number\" value=\"00005\" />\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1667455955152</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"6\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"initial commit\" />\n    <MESSAGE value=\"basic SMTLIB2 generation\" />\n    <MESSAGE value=\"chore: cleanup output &amp; some refactoring\" />\n    <MESSAGE value=\"feat: extracting model from z3 output\" />\n    <MESSAGE value=\"fix: model extraction&#10;&#10;Due to inlining in Spacer, sometimes we cannot extract Counterex from the output. One may resort to using query!0. However, we cannot guarantee that the order of arguments in query!0 are the same as those in Counterex. Therefore, we have to disable inlining.&#10;&#10;Not that some cases involves nonlinear operators like `*`. We need to use a different arithmetic solver when handling these.\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"fix: model extraction&#10;&#10;Due to inlining in Spacer, sometimes we cannot extract Counterex from the output. One may resort to using query!0. However, we cannot guarantee that the order of arguments in query!0 are the same as those in Counterex. Therefore, we have to disable inlining.&#10;&#10;Not that some cases involves nonlinear operators like `*`. We need to use a different arithmetic solver when handling these.\" />\n  </component>\n  <component name=\"XDebuggerManager\">\n    <breakpoint-manager>\n      <breakpoints>\n        <breakpoint enabled=\"true\" type=\"java-exception\">\n          <properties class=\"java.lang.ClassCastException\" package=\"java.lang\" />\n          <option name=\"timeStamp\" value=\"6\" />\n        </breakpoint>\n      </breakpoints>\n    </breakpoint-manager>\n  </component>\n  <component name=\"XSLT-Support.FileAssociations.UIState\">\n    <expand />\n    <select />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 1d5f0481ec449b21a4c643e59f87b204a1d6906d)
++++ b/.idea/workspace.xml	(date 1672337088248)
+@@ -4,12 +4,10 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="e8ac0f73-d781-4910-8949-711e60015e55" name="Changes" comment="fix: model extraction&#10;&#10;Due to inlining in Spacer, sometimes we cannot extract Counterex from the output. One may resort to using query!0. However, we cannot guarantee that the order of arguments in query!0 are the same as those in Counterex. Therefore, we have to disable inlining.&#10;&#10;Not that some cases involves nonlinear operators like `*`. We need to use a different arithmetic solver when handling these.">
+-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/FOTransformer.kt" afterDir="false" />
++    <list default="true" id="e8ac0f73-d781-4910-8949-711e60015e55" name="Changes" comment="basic transformation done">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/benchmarks/mul-by-while.sl" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/mul-by-while.sl" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/benchmarks/mul-by-while.sl.json" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/mul-by-while.sl.json" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/FOTransformer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/FOTransformer.kt" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+@@ -35,6 +33,11 @@
+   </component>
+   <component name="Git.Settings">
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
++  </component>
++  <component name="HighlightingSettingsPerFile">
++    <setting file="dummy://scala-decompiled/Parser.decompiled.java" root0="SKIP_HIGHLIGHTING" />
++    <setting file="dummy://scala-decompiled/PartialQu.decompiled.java" root0="SKIP_HIGHLIGHTING" />
++    <setting file="dummy://scala-decompiled/PartialQu.decompiled.java" root0="SKIP_HIGHLIGHTING" />
+   </component>
+   <component name="MarkdownSettingsMigration">
+     <option name="stateVersion" value="1" />
+@@ -51,30 +54,30 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent">{
+-  &quot;keyToString&quot;: {
+-    &quot;Project.color&quot;: &quot;624816&quot;,
+-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;16&quot;,
+-    &quot;last_directory_selection&quot;: &quot;/home/panda2134/Documents/semgus-verifier/src/main/kotlin/org/semgus/verifier&quot;,
+-    &quot;last_opened_file_path&quot;: &quot;/home/panda2134/Documents/Semgus-Parser/SemgusParser&quot;,
+-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.new.ui&quot;,
+-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
++  <component name="PropertiesComponent"><![CDATA[{
++  "keyToString": {
++    "Project.color": "624816",
++    "RunOnceActivity.OpenProjectViewOnStart": "true",
++    "RunOnceActivity.ShowReadmeOnStart": "true",
++    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
++    "WebServerToolWindowFactoryState": "false",
++    "jdk.selected.JAVA_MODULE": "16",
++    "last_directory_selection": "/home/panda2134/Documents/semgus-verifier/src/main/kotlin/org/semgus/verifier",
++    "last_opened_file_path": "/home/panda2134/Documents/Semgus-Parser/SemgusParser",
++    "node.js.detected.package.eslint": "true",
++    "node.js.detected.package.tslint": "true",
++    "node.js.selected.package.eslint": "(autodetect)",
++    "node.js.selected.package.tslint": "(autodetect)",
++    "nodejs_package_manager_path": "npm",
++    "settings.editor.selected.configurable": "preferences.pluginManager",
++    "vue.rearranger.settings.migration": "true"
+   },
+-  &quot;keyToStringList&quot;: {
+-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+-      &quot;TEXT&quot;
++  "keyToStringList": {
++    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
++      "TEXT"
+     ]
+   }
+-}</component>
++}]]></component>
+   <component name="RecentsManager">
+     <key name="CopyFile.RECENT_KEYS">
+       <recent name="$PROJECT_DIR$/benchmarks" />
+@@ -150,7 +153,8 @@
+       <workItem from="1672060990796" duration="2989000" />
+       <workItem from="1672129640653" duration="1790000" />
+       <workItem from="1672132935710" duration="678000" />
+-      <workItem from="1672141039066" duration="5154000" />
++      <workItem from="1672141039066" duration="5770000" />
++      <workItem from="1672315487299" duration="12223000" />
+     </task>
+     <task id="LOCAL-00001" summary="initial commit">
+       <created>1665333031398</created>
+@@ -187,7 +191,14 @@
+       <option name="project" value="LOCAL" />
+       <updated>1667455955152</updated>
+     </task>
+-    <option name="localTasksCounter" value="6" />
++    <task id="LOCAL-00006" summary="basic transformation done">
++      <created>1672158792440</created>
++      <option name="number" value="00006" />
++      <option name="presentableId" value="LOCAL-00006" />
++      <option name="project" value="LOCAL" />
++      <updated>1672158792440</updated>
++    </task>
++    <option name="localTasksCounter" value="7" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -210,7 +221,8 @@
+     <MESSAGE value="chore: cleanup output &amp; some refactoring" />
+     <MESSAGE value="feat: extracting model from z3 output" />
+     <MESSAGE value="fix: model extraction&#10;&#10;Due to inlining in Spacer, sometimes we cannot extract Counterex from the output. One may resort to using query!0. However, we cannot guarantee that the order of arguments in query!0 are the same as those in Counterex. Therefore, we have to disable inlining.&#10;&#10;Not that some cases involves nonlinear operators like `*`. We need to use a different arithmetic solver when handling these." />
+-    <option name="LAST_COMMIT_MESSAGE" value="fix: model extraction&#10;&#10;Due to inlining in Spacer, sometimes we cannot extract Counterex from the output. One may resort to using query!0. However, we cannot guarantee that the order of arguments in query!0 are the same as those in Counterex. Therefore, we have to disable inlining.&#10;&#10;Not that some cases involves nonlinear operators like `*`. We need to use a different arithmetic solver when handling these." />
++    <MESSAGE value="basic transformation done" />
++    <option name="LAST_COMMIT_MESSAGE" value="basic transformation done" />
+   </component>
+   <component name="XDebuggerManager">
+     <breakpoint-manager>
+@@ -219,6 +231,11 @@
+           <properties class="java.lang.ClassCastException" package="java.lang" />
+           <option name="timeStamp" value="6" />
+         </breakpoint>
++        <line-breakpoint enabled="true" type="kotlin-line">
++          <url>file://$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt</url>
++          <line>212</line>
++          <option name="timeStamp" value="9" />
++        </line-breakpoint>
+       </breakpoints>
+     </breakpoint-manager>
+   </component>
+Index: src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.semgus.verifier.smt\n\nimport de.tudresden.inf.lat.jsexp.Sexp\nimport de.tudresden.inf.lat.jsexp.SexpFactory\nimport de.tudresden.inf.lat.jsexp.SexpList\nimport de.tudresden.inf.lat.jsexp.SexpString\nimport org.semgus.verifier.frontend.VerificationTarget\nimport org.semgus.verifier.walk.ProgramWalker\nimport org.semgus.java.`object`.SmtTerm\nimport org.semgus.java.`object`.TypedVar\nimport java.nio.file.Path\nimport java.lang.ProcessBuilder\nimport java.lang.ProcessBuilder.Redirect\nimport java.lang.RuntimeException\nimport java.util.concurrent.TimeUnit\nimport kotlin.io.path.createTempFile\n\nclass SmtAdapter(\n    val target: VerificationTarget,\n    val rootRuleName: String,\n    val instantiatedRules: List<ProgramWalker.InstantiatedSemanticRule>\n) {\n    private val prelude = \"\"\"\n        (set-logic HORN)\n        (set-option :fp.engine spacer)\n        (set-option :fp.xform.slice false)\n        (set-option :fp.xform.inline_linear false)\n        (set-option :fp.xform.inline_eager false)\n        (set-option :fp.spacer.arith.solver 6)\n        (set-option :parallel.enable true)\n    \"\"\".trimIndent()\n\n    private var cexArgSignature: List<TypedVar>? = null\n\n    /**\n     * @return (program verified?, counterexamples)\n     */\n    fun runZ3AndParseModel(path: Path): Pair<Boolean, List<Pair<TypedVar, String>>> {\n        val proc = ProcessBuilder(listOf(\"z3\", path.toAbsolutePath().toString()))\n            .redirectOutput(Redirect.PIPE)\n            .redirectError(Redirect.PIPE)\n            .start()\n        proc.waitFor(24, TimeUnit.HOURS)\n        val stderr = proc.errorStream.bufferedReader().readLines()\n        val stdout = proc.inputStream.bufferedReader().readLines()\n        if (stderr.isNotEmpty()) {\n            throw RuntimeException(\"Z3 error: \\n${stderr.joinToString(\"\\n\")}\")\n        }\n        if (stdout.any { x -> x.startsWith(\"(error \") }) {\n            throw RuntimeException(\"Z3 error: \\n${stdout.joinToString(\"\\n\")}\")\n        }\n        when (val out = stdout.first()) {\n            \"unsat\" -> {\n                return Pair(true, listOf())\n            }\n\n            \"unknown\" -> {\n                throw RuntimeException(\"Z3 gives unknown model\")\n            }\n\n            \"sat\" -> {\n                val sExpression = SexpFactory.parse(stdout.drop(1).joinToString(\"\\n\"))\n                val letExpr = extractLet(sExpression)\n                val cex = letExpr.flatMap { v -> extractCounterExample(v.second) }\n                println(cex)\n                val argsAsStrings = cex.last().drop(1).map { v ->\n                    when (v) {\n                        is SexpString -> v.toString()\n                        is SexpList -> {\n                            if (v.length != 2 || v.first() !is SexpString || v.drop(1).first() !is SexpString)\n                                return@map v.toString()\n                            val p = v.first() as SexpString\n                            val n = v.drop(1).first() as SexpString\n                            if (p.toString() != \"-\") {\n                                return@map v.toString()\n                            }\n                            \"-$n\"\n                        }\n\n                        else -> throw IllegalStateException(\"unrecognized argument: $v\")\n                    }\n                }\n                return Pair(false, cexArgSignature!!.zip(argsAsStrings).toList())\n            }\n\n            else -> {\n                println(out)\n                throw IllegalArgumentException(\"malformed z3 result!\")\n            }\n        }\n    }\n\n    private fun extractCounterExample(input: Sexp): List<SexpList> {\n        if (input !is SexpList) return listOf()\n        val children = input.toList()\n        val f = children.first()\n        if (f is SexpString && f.toString() == \"Counterex\") {\n            return listOf(input)\n        }\n        return children.flatMap { v -> extractCounterExample(v) }\n    }\n\n    private fun extractLet(input: Sexp): List<Pair<String, Sexp>> {\n        if (input !is SexpList) return listOf()\n        val children = input.toList()\n        val f = children.first()\n        if (f !is SexpString) {\n            return listOf()\n        }\n        return when (f.toString()) {\n            \"let\" -> {\n                val declList = children[1] as SexpList\n                (declList.map { v ->\n                    val x = v as SexpList\n                    assert(x.length == 2)\n                    Pair((x[0] as SexpString).toString(), x[1] as Sexp)\n                }) + extractLet(children[2])\n            }\n\n            else -> listOf()\n        }\n    }\n\n    fun generateSmtFile(): Path {\n        val (fullConstraint, quantifiedChild, semOccurrence) = verifyAndExtract()\n\n        val path = createTempFile(\"semgus-verification-\", \".smt2\")\n        val w = path.toFile().printWriter()\n\n        val constraint = quantifiedChild.arguments.drop(1).first()\n        w.println(\"; prelude\")\n        w.println(prelude)\n        w.println()\n\n        w.println(\"; relation declarations\")\n        cexArgSignature = fullConstraint.bindings\n        w.println(\"(declare-rel Counterex (${fullConstraint.bindings.joinToString(\" \") { v -> v.type.name }}))\")\n        val printedRules = mutableSetOf<String>()\n        for (rule in instantiatedRules) {\n            if (rule.head.name in printedRules) continue\n            printedRules.add(rule.head.name)\n            w.println(\"(declare-rel ${rule.head.name} (${rule.head.arguments.joinToString(\" \") { v -> v.type.name }}))\")\n        }\n        w.println()\n        w.println(\"; semantic rules, instantiated with the given AST\")\n        for ((index, rule) in instantiatedRules.withIndex()) {\n            val printed = mutableSetOf<String>()\n            val printArgs = { xs: List<TypedVar> ->\n                for (arg in xs) {\n                    val name = \"$${index}$${arg.name}\"\n                    if (name in printed) continue\n                    printed.add(name)\n                    w.println(\"(declare-var $name ${arg.type})\")\n                }\n            }\n            for (premise in rule.bodyRelations) {\n                printArgs(premise.arguments)\n            }\n            printArgs(rule.head.arguments)\n            w.println(rule.toSExpression(\"$${index}$\"))\n            w.println()\n        }\n        w.println()\n        w.println(\"; verification condition\")\n        val rootRuleSExpr = \"($rootRuleName ${\n            semOccurrence.arguments\n                .filter { v -> v.type.name != target.problem.targetNonTerminal.name }\n                .joinToString(\" \") { v -> v.term.toSExpression() }\n        })\"\n        for (binding in fullConstraint.bindings) {\n            w.println(\"(declare-var ${binding.name} ${binding.type})\")\n        }\n        w.println(\n            \"(rule (=> (and $rootRuleSExpr (not ${constraint.term.toSExpression()}))\\n\" +\n                    \"          (Counterex ${fullConstraint.bindings.joinToString(\" \") { v -> v.name }}) ))\"\n        )\n        w.println()\n        w.println(\"; query for counterexamples\")\n        w.println(\"(query Counterex :print-certificate true)\")\n        w.close()\n\n        return path\n    }\n\n    private fun verifyAndExtract(): Triple<SmtTerm.Quantifier, SmtTerm.Application, SmtTerm.Application> {\n        // only allow 1 constraint\n        assert(target.problem.constraints.size == 1)\n        val fullConstraint = target.problem.constraints.first() as SmtTerm.Quantifier\n        println(fullConstraint.toSExpression())\n        FOTransformer(fullConstraint)\n        // only allow forall now\n        assert(fullConstraint.type == SmtTerm.Quantifier.Type.FOR_ALL)\n\n        // inner parts of the quantified expression\n        val quantifiedChild = fullConstraint.child as SmtTerm.Application\n        assert(quantifiedChild.name.name == \"=>\" && quantifiedChild.arguments.size == 2)\n        val semOccurrence = quantifiedChild.arguments.first()!!.term as SmtTerm.Application\n\n        // extract the premise, which should be a semantic relation application\n        val semRelationHead = target.problem.targetNonTerminal.productions.entries.first()\n            .value.semanticRules.first()!!.head\n        assert(semOccurrence.name.name == semRelationHead.name)\n        val programArgPos =\n            semRelationHead.arguments.indexOfFirst { v -> v.type.name == target.problem.targetNonTerminal.name }\n        // ensure that the semantic relation is applied on the synthesis target\n        assert((semOccurrence.arguments[programArgPos].term as SmtTerm.Application).name.name == target.problem.targetName)\n\n        return Triple(fullConstraint, quantifiedChild, semOccurrence)\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt b/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt
+--- a/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt	(revision 1d5f0481ec449b21a4c643e59f87b204a1d6906d)
++++ b/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt	(date 1672336892571)
+@@ -1,5 +1,6 @@
+ package org.semgus.verifier.smt
+ 
++import com.maxadamski.illogical.*
+ import de.tudresden.inf.lat.jsexp.Sexp
+ import de.tudresden.inf.lat.jsexp.SexpFactory
+ import de.tudresden.inf.lat.jsexp.SexpList
+@@ -8,10 +9,14 @@
+ import org.semgus.verifier.walk.ProgramWalker
+ import org.semgus.java.`object`.SmtTerm
+ import org.semgus.java.`object`.TypedVar
++import scala.Option
++import scala.Tuple2
++import scala.jdk.javaapi.CollectionConverters
+ import java.nio.file.Path
+ import java.lang.ProcessBuilder
+ import java.lang.ProcessBuilder.Redirect
+ import java.lang.RuntimeException
++import java.util.*
+ import java.util.concurrent.TimeUnit
+ import kotlin.io.path.createTempFile
+ 
+@@ -121,13 +126,43 @@
+         }
+     }
+ 
++    private fun substituteSemApplication(f: Form, semRelationName: String, targetNonterminalName: String): Form = when(f) {
++        is Pred -> if (f.name() != semRelationName) f
++            else {
++                if (f.signature().isEmpty) {
++                    Pred(rootRuleName, f.arguments().filter { v -> (v !is Var) || v.name() != targetNonterminalName } as scala.collection.immutable.List<Term>, Option.empty())
++                } else {
++                    val args = CollectionConverters.asJava(f.arguments())
++                    val sig = CollectionConverters.asJava(f.signature().get())
++                    val t = args.zip(sig).filter { (r, s) ->
++                        (r !is Var) || (r as Var).name() != targetNonterminalName }
++                        .unzip()
++                    Pred(rootRuleName, CollectionConverters.asScala(t.first.toList()).toList(),
++                        Option.apply(CollectionConverters.asScala(t.second.toList()).toList()))
++                }
++            }
++
++        else -> f
++    }
++
++
+     fun generateSmtFile(): Path {
+-        val (fullConstraint, quantifiedChild, semOccurrence) = verifyAndExtract()
++        assert(target.problem.constraints.size == 1)
++        val fullConstraint = target.problem.constraints.first() as SmtTerm.Quantifier
++
++        val declaredRelation = mutableMapOf(
++            Pair("=", Optional.empty<List<String>>()), // temporarily treat = for booleans as predicate, not logical equivalent
++            Pair("distinct", Optional.empty<List<String>>()),
++            Pair(">", Optional.empty<List<String>>()), // builtins
++            Pair("<", Optional.empty<List<String>>()),
++            Pair(">=", Optional.empty<List<String>>()),
++            Pair("<=", Optional.empty<List<String>>()),
++        )
++        val declaredVars = mutableMapOf<String, String>()
+ 
+         val path = createTempFile("semgus-verification-", ".smt2")
+         val w = path.toFile().printWriter()
+ 
+-        val constraint = quantifiedChild.arguments.drop(1).first()
+         w.println("; prelude")
+         w.println(prelude)
+         w.println()
+@@ -135,11 +170,13 @@
+         w.println("; relation declarations")
+         cexArgSignature = fullConstraint.bindings
+         w.println("(declare-rel Counterex (${fullConstraint.bindings.joinToString(" ") { v -> v.type.name }}))")
++        declaredRelation["Counterex"] = Optional.of(fullConstraint.bindings.map { v -> v.type.name })
+         val printedRules = mutableSetOf<String>()
+         for (rule in instantiatedRules) {
+             if (rule.head.name in printedRules) continue
+             printedRules.add(rule.head.name)
+             w.println("(declare-rel ${rule.head.name} (${rule.head.arguments.joinToString(" ") { v -> v.type.name }}))")
++            declaredRelation[rule.head.name] = Optional.of(rule.head.arguments.map { v -> v.type.name })
+         }
+         w.println()
+         w.println("; semantic rules, instantiated with the given AST")
+@@ -151,6 +188,7 @@
+                     if (name in printed) continue
+                     printed.add(name)
+                     w.println("(declare-var $name ${arg.type})")
++                    declaredVars[name] = arg.type.name
+                 }
+             }
+             for (premise in rule.bodyRelations) {
+@@ -162,16 +200,39 @@
+         }
+         w.println()
+         w.println("; verification condition")
+-        val rootRuleSExpr = "($rootRuleName ${
+-            semOccurrence.arguments
+-                .filter { v -> v.type.name != target.problem.targetNonTerminal.name }
+-                .joinToString(" ") { v -> v.term.toSExpression() }
+-        })"
++
++        val semRelationHead = target.problem.targetNonTerminal.productions.entries.first()
++            .value.semanticRules.first()!!.head
++        val foTransformer = FOTransformer().apply {
++            this.declaredRelation = declaredRelation + Pair(semRelationHead.name, Optional.empty()) // define S.Sem although it will then be substituted
++        }
++        val (form, subs) = foTransformer.toDNFClauseList(fullConstraint)
++
++        assert(form.size == 1) { -> "Currently do not support multiple DNF clauses. Will be done later" }
++
++        val formInstantiated = substituteSemApplication(form.first(), semRelationHead.name, target.problem.targetNonTerminal.name)
+         for (binding in fullConstraint.bindings) {
+             w.println("(declare-var ${binding.name} ${binding.type})")
+         }
++        for (n in subs) {
++            when (n) {
++                is Var -> {
++                    w.println("(declare-var ${n.name()} ${n.typing()})")
++                }
++                is Con -> {
++                    w.println("(declare-var ${n.name()} ${n.typing()})")
++                }
++                is Func -> {
++                    assert(n.signature().isDefined)
++                    val argTypes = CollectionConverters.asJava(n.signature().get()._1)
++                    val rtnType = n.signature().get()._2
++                    w.println("(declare-fun ${n.name()} (${argTypes.joinToString(" ") { v -> v.toString() }}) ${rtnType.toString()})")
++                }
++                else -> TODO()
++            }
++        }
+         w.println(
+-            "(rule (=> (and $rootRuleSExpr (not ${constraint.term.toSExpression()}))\n" +
++            "(rule (=> ${SexprFormatter.formatted(formInstantiated)}\n" +
+                     "          (Counterex ${fullConstraint.bindings.joinToString(" ") { v -> v.name }}) ))"
+         )
+         w.println()
+@@ -182,29 +243,29 @@
+         return path
+     }
+ 
+-    private fun verifyAndExtract(): Triple<SmtTerm.Quantifier, SmtTerm.Application, SmtTerm.Application> {
+-        // only allow 1 constraint
+-        assert(target.problem.constraints.size == 1)
+-        val fullConstraint = target.problem.constraints.first() as SmtTerm.Quantifier
+-        println(fullConstraint.toSExpression())
+-        FOTransformer(fullConstraint)
+-        // only allow forall now
+-        assert(fullConstraint.type == SmtTerm.Quantifier.Type.FOR_ALL)
+-
+-        // inner parts of the quantified expression
+-        val quantifiedChild = fullConstraint.child as SmtTerm.Application
+-        assert(quantifiedChild.name.name == "=>" && quantifiedChild.arguments.size == 2)
+-        val semOccurrence = quantifiedChild.arguments.first()!!.term as SmtTerm.Application
+-
+-        // extract the premise, which should be a semantic relation application
+-        val semRelationHead = target.problem.targetNonTerminal.productions.entries.first()
+-            .value.semanticRules.first()!!.head
+-        assert(semOccurrence.name.name == semRelationHead.name)
+-        val programArgPos =
+-            semRelationHead.arguments.indexOfFirst { v -> v.type.name == target.problem.targetNonTerminal.name }
+-        // ensure that the semantic relation is applied on the synthesis target
+-        assert((semOccurrence.arguments[programArgPos].term as SmtTerm.Application).name.name == target.problem.targetName)
+-
+-        return Triple(fullConstraint, quantifiedChild, semOccurrence)
+-    }
++//    private fun verifyAndExtract(): Triple<SmtTerm.Quantifier, SmtTerm.Application, SmtTerm.Application> {
++//        // only allow 1 constraint
++//        assert(target.problem.constraints.size == 1)
++//        val fullConstraint = target.problem.constraints.first() as SmtTerm.Quantifier
++//        println(fullConstraint.toSExpression())
++//        FOTransformer(fullConstraint)
++//        // only allow forall now
++//        assert(fullConstraint.type == SmtTerm.Quantifier.Type.FOR_ALL)
++//
++//        // inner parts of the quantified expression
++//        val quantifiedChild = fullConstraint.child as SmtTerm.Application
++//        assert(quantifiedChild.name.name == "=>" && quantifiedChild.arguments.size == 2)
++//        val semOccurrence = quantifiedChild.arguments.first()!!.term as SmtTerm.Application
++//
++//        // extract the premise, which should be a semantic relation application
++//        val semRelationHead = target.problem.targetNonTerminal.productions.entries.first()
++//            .value.semanticRules.first()!!.head
++//        assert(semOccurrence.name.name == semRelationHead.name)
++//        val programArgPos =
++//            semRelationHead.arguments.indexOfFirst { v -> v.type.name == target.problem.targetNonTerminal.name }
++//        // ensure that the semantic relation is applied on the synthesis target
++//        assert((semOccurrence.arguments[programArgPos].term as SmtTerm.Application).name.name == target.problem.targetName)
++//
++//        return Triple(fullConstraint, quantifiedChild, semOccurrence)
++//    }
+ }
+\ No newline at end of file
+Index: src/main/kotlin/org/semgus/verifier/smt/FOTransformer.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.semgus.verifier.smt\n\nimport com.maxadamski.illogical.*\nimport org.semgus.java.`object`.SmtTerm\nimport scala.jdk.javaapi.CollectionConverters\nimport java.lang.RuntimeException\n\n/**\n * Currently, we do not support = for boolean values.\n * That's because parsing this requires type deduction, which is the next goal\n *\n */\nclass FOTransformer(term: SmtTerm) {\n    private var reverseMapping = mutableMapOf<String, String>()\n    val illogicalForm: Form\n\n    init {\n        illogicalForm = toIllogicalTerm(term) as Form\n        println(`TextFormatter$`.`MODULE$`.fmt(illogicalForm))\n        val skolem = `Skolemizer$`.`MODULE$`.skolemized(illogicalForm)\n        fun f(x: Form): Form =\n            when (x) {\n                is Qu -> f(x.form())\n                else -> x\n            }\n        val core = Not(f(skolem)).simplifying()\n        println(`TextFormatter$`.`MODULE$`.fmt(core))\n    }\n\n    private fun toIllogicalTerm(term: SmtTerm, useFunc: Boolean = false): Node =\n        when (term) {\n            is SmtTerm.Quantifier -> term.bindings.map { v ->\n                val newName = \"var${reverseMapping.size}\"\n                reverseMapping[newName] = v.name\n                newName\n            }.foldRight(toIllogicalTerm(term.child) as Form) { s, form ->\n                Qu(\n                    if (term.type == SmtTerm.Quantifier.Type.EXISTS) {\n                        `EXISTS$`.`MODULE$`\n                    } else {\n                        `FORALL$`.`MODULE$`\n                    },\n                    Var(s),\n                    form\n                )\n            }\n            is SmtTerm.Application -> {\n                val logicalTokens = listOf(\"and\", \"or\", \"not\", \"=>\")\n\n                if (term.name.name in logicalTokens) {\n                    val args = term.arguments.map { v ->\n                        toIllogicalTerm(v.term, false) as Form\n                    }\n\n                    when(term.name.name) {\n                        \"and\" -> args.reduce {s, t -> Op(s, `AND$`.`MODULE$`, t) }\n                        \"or\" -> args.reduce {s, t -> Op(s, `OR$`.`MODULE$`, t) }\n                        \"=>\" -> args.reduce {s, t -> Op(s, `IMP$`.`MODULE$`, t) }\n                        \"not\" -> {\n                            assert(args.size == 1)\n                            Not(args.first())\n                        }\n                        else -> throw RuntimeException(\"impossible!\")\n                    }\n                } else {\n                    val args = term.arguments.map { v ->\n                        toIllogicalTerm(v.term, true) as Term\n                    }\n                    if (term.arguments.isNotEmpty()) {\n                        val newName = \"${if (useFunc) \"func\" else \"pred\"}${reverseMapping.size}\"\n                        reverseMapping[newName] = term.name.name\n                        if (useFunc) Func(newName,  CollectionConverters.asScala(args).toList())\n                        else Pred(newName, CollectionConverters.asScala(args).toList())\n                    } else {\n                        val newName = \"var${reverseMapping.size}\"\n                        reverseMapping[newName] = term.name.name\n                        Var(newName)\n                    }\n                }\n            }\n            is SmtTerm.Variable -> {\n                val newName = \"var${reverseMapping.size}\"\n                reverseMapping[newName] = term.name\n                Var(newName)\n            }\n            is SmtTerm.CString -> {\n                val newName = \"@s${reverseMapping.size}\"\n                reverseMapping[newName] = term.value\n                Con(newName)\n            }\n            is SmtTerm.CNumber -> {\n                val newName = \"@n${reverseMapping.size}\"\n                reverseMapping[newName] = term.value.toString()\n                Con(newName)\n            }\n            is SmtTerm.CBitVector -> {\n                val lit =\n                    \"#x\" + term.value.toByteArray().reversed().joinToString { v -> \"%02x\".format(v) }\n                val newName = \"@n${reverseMapping.size}\"\n                reverseMapping[newName] = lit\n                Con(newName)\n            }\n\n            else -> throw IllegalArgumentException(\"cannot convert this into s-expr\")\n        }\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/kotlin/org/semgus/verifier/smt/FOTransformer.kt b/src/main/kotlin/org/semgus/verifier/smt/FOTransformer.kt
+--- a/src/main/kotlin/org/semgus/verifier/smt/FOTransformer.kt	(revision 1d5f0481ec449b21a4c643e59f87b204a1d6906d)
++++ b/src/main/kotlin/org/semgus/verifier/smt/FOTransformer.kt	(date 1672337271399)
+@@ -2,45 +2,72 @@
+ 
+ import com.maxadamski.illogical.*
+ import org.semgus.java.`object`.SmtTerm
++import scala.collection.immutable.Map
+ import scala.jdk.javaapi.CollectionConverters
+ import java.lang.RuntimeException
++import java.util.*
+ 
+-/**
+- * Currently, we do not support = for boolean values.
+- * That's because parsing this requires type deduction, which is the next goal
+- *
+- */
+-class FOTransformer(term: SmtTerm) {
++class FOTransformer() {
+     private var reverseMapping = mutableMapOf<String, String>()
+-    val illogicalForm: Form
++    private var illogicalForm: Form? = null
++    var declaredRelation = mapOf<String, Optional<List<String>>>()
++    var declaredVars = mapOf<String, String>()
++
++    private fun skolemize(form: Form): Pair<Form, Set<Term>> {
++        val partialPNF = form.simplifying().partialPNF()
++        val skolemSubMethod = `Skolemizer$`.`MODULE$`::class.java.getDeclaredMethod("skolemSub", scala.collection.immutable.List::class.java)
++        skolemSubMethod.isAccessible = true
++        val subs = skolemSubMethod.invoke(`Skolemizer$`.`MODULE$`, partialPNF._2) as scala.collection.immutable.Set<Sub>?
++        val result = partialPNF._1.cnf().substituting(subs)
++        // TODO: add all vars in partialPnf prefix into the term set returned
++        val newTerms = CollectionConverters.asJava(subs!!.map { x -> x.t() }.toSet<Term>())
++        return Pair(result, newTerms as Set<Term>)
++    }
+ 
+-    init {
++    private fun findDNFClauses(x: Form): List<Form> =
++        when (x) {
++            is Op -> {
++                if (x.token() != `OR$`.`MODULE$`) {
++                    listOf(x)
++                } else {
++                    findDNFClauses(x.leftForm()) + findDNFClauses(x.rightForm())
++                }
++            }
++            else -> listOf(x)
++        }
++
++    fun toDNFClauseList(term: SmtTerm): Pair<List<Form>, Set<Term>> {
+         illogicalForm = toIllogicalTerm(term) as Form
++        val mapWrapper = CollectionConverters.asScala(declaredVars.map { (k, v) -> Pair(k, ConcreteType(v) as NodeType) }.toMap())
++        val ctx = Map.from(mapWrapper)
++
++        illogicalForm!!.typeCheck(ctx)
+         println(`TextFormatter$`.`MODULE$`.fmt(illogicalForm))
+-        val skolem = `Skolemizer$`.`MODULE$`.skolemized(illogicalForm)
+-        fun f(x: Form): Form =
+-            when (x) {
+-                is Qu -> f(x.form())
+-                else -> x
+-            }
+-        val core = Not(f(skolem)).simplifying()
++        val (skolem, subs) = this.skolemize(illogicalForm!!)
++        skolem.typeCheck(ctx)
++        val partialPNF = skolem.partialPNF()
++        val core = Not(partialPNF._1).simplifying()
++        val dnf = core.dnf()
+         println(`TextFormatter$`.`MODULE$`.fmt(core))
++        println(`TextFormatter$`.`MODULE$`.fmt(dnf))
++
++        return Pair(findDNFClauses(dnf), subs)
+     }
+ 
+     private fun toIllogicalTerm(term: SmtTerm, useFunc: Boolean = false): Node =
+         when (term) {
+             is SmtTerm.Quantifier -> term.bindings.map { v ->
+-                val newName = "var${reverseMapping.size}"
++                val newName = "var${v.type.name}${reverseMapping.size}"
+                 reverseMapping[newName] = v.name
+-                newName
+-            }.foldRight(toIllogicalTerm(term.child) as Form) { s, form ->
++                Pair(newName, v.type.name)
++            }.foldRight(toIllogicalTerm(term.child) as Form) { (s, ty), form ->
+                 Qu(
+                     if (term.type == SmtTerm.Quantifier.Type.EXISTS) {
+                         `EXISTS$`.`MODULE$`
+                     } else {
+                         `FORALL$`.`MODULE$`
+                     },
+-                    Var(s),
++                    Var(s, ConcreteType(ty)),
+                     form
+                 )
+             }
+@@ -55,7 +82,7 @@
+                     when(term.name.name) {
+                         "and" -> args.reduce {s, t -> Op(s, `AND$`.`MODULE$`, t) }
+                         "or" -> args.reduce {s, t -> Op(s, `OR$`.`MODULE$`, t) }
+-                        "=>" -> args.reduce {s, t -> Op(s, `IMP$`.`MODULE$`, t) }
++                        "=>" -> args.reduceRight {s, t -> Op(s, `IMP$`.`MODULE$`, t) }
+                         "not" -> {
+                             assert(args.size == 1)
+                             Not(args.first())
+@@ -66,39 +93,50 @@
+                     val args = term.arguments.map { v ->
+                         toIllogicalTerm(v.term, true) as Term
+                     }
++                    // working around a bug in semgus-parser that treats (mul-by-while) as a predicate
+                     if (term.arguments.isNotEmpty()) {
++                        val typing = declaredRelation[term.name.name]
++                        if (!useFunc && typing == null) {
++                            throw IllegalArgumentException("unknown predicate ${term.name.name}")
++                        }
+                         val newName = "${if (useFunc) "func" else "pred"}${reverseMapping.size}"
+                         reverseMapping[newName] = term.name.name
+-                        if (useFunc) Func(newName,  CollectionConverters.asScala(args).toList())
+-                        else Pred(newName, CollectionConverters.asScala(args).toList())
+-                    } else {
++
++                        // TODO: consider typing here
++                        if (useFunc) Func(
++                            newName,
++                            CollectionConverters.asScala(args).toList(),
++                            scala.Option.apply(null)
++                        )
++                        else Pred(newName, CollectionConverters.asScala(args).toList(), scala.Option.apply(null))
++                    }  else {
+                         val newName = "var${reverseMapping.size}"
+                         reverseMapping[newName] = term.name.name
+-                        Var(newName)
++                        Var(newName, `AnyType$`.`MODULE$`)
+                     }
+                 }
+             }
+             is SmtTerm.Variable -> {
+                 val newName = "var${reverseMapping.size}"
+                 reverseMapping[newName] = term.name
+-                Var(newName)
++                Var(newName, ConcreteType(term.type.name))
+             }
+             is SmtTerm.CString -> {
+                 val newName = "@s${reverseMapping.size}"
+                 reverseMapping[newName] = term.value
+-                Con(newName)
++                Con(newName, ConcreteType("String"))
+             }
+             is SmtTerm.CNumber -> {
+                 val newName = "@n${reverseMapping.size}"
+                 reverseMapping[newName] = term.value.toString()
+-                Con(newName)
++                Con(newName, ConcreteType("Int"))
+             }
+             is SmtTerm.CBitVector -> {
+                 val lit =
+                     "#x" + term.value.toByteArray().reversed().joinToString { v -> "%02x".format(v) }
+                 val newName = "@n${reverseMapping.size}"
+                 reverseMapping[newName] = lit
+-                Con(newName)
++                Con(newName, ConcreteType("(_ BitVec ${term.size})"))
+             }
+ 
+             else -> throw IllegalArgumentException("cannot convert this into s-expr")

@@ -5,7 +5,7 @@ import org.semgus.verifier.smt.SmtAdapter
 import org.semgus.verifier.walk.ProgramWalker
 
 fun main() {
-    val target = visitFile("./benchmarks/max2-exp-alt.sl.json")
+    val target = visitFile("./benchmarks/plus-2-times-3/wrong.sl.json")
     val walker = ProgramWalker(target.program, target.problem)
 
     val (instantiatedRules, rootRuleName) = walker.traverseProgram()

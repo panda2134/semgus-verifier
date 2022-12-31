@@ -4,11 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e8ac0f73-d781-4910-8949-711e60015e55" name="Changes" comment="basic transformation done">
+    <list default="true" id="e8ac0f73-d781-4910-8949-711e60015e55" name="Changes" comment="working on mul-by-while!">
+      <change afterPath="$PROJECT_DIR$/benchmarks/plus-2-times-3/wrong.sl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notes.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/FOTransformer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/FOTransformer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/max2-exp-alt.sl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/max2-exp-alt.sl.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/max2-exp.sl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/max2-exp.sl.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/max3-exp.sl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/max3-exp.sl.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/mul-by-while.sl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/mul-by-while.sl.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/plus-2-times-3.sl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/plus-2-times-3.sl.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/Main.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,11 +54,6 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="dummy://scala-decompiled/Parser.decompiled.java" root0="SKIP_HIGHLIGHTING" />
-    <setting file="dummy://scala-decompiled/PartialQu.decompiled.java" root0="SKIP_HIGHLIGHTING" />
-    <setting file="dummy://scala-decompiled/PartialQu.decompiled.java" root0="SKIP_HIGHLIGHTING" />
-  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -64,32 +69,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Project.color&quot;: &quot;624816&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;16&quot;,
-    &quot;last_directory_selection&quot;: &quot;/home/panda2134/Documents/semgus-verifier/src/main/kotlin/org/semgus/verifier&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/panda2134/Documents/Semgus-Parser/SemgusParser&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Project.color": "624816",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "jdk.selected.JAVA_MODULE": "16",
+    "last_directory_selection": "/home/panda2134/Documents/semgus-verifier/src/main/kotlin/org/semgus/verifier",
+    "last_opened_file_path": "/home/panda2134/Documents/semgus-verifier/benchmarks/plus-2-times-3",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;TEXT&quot;
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "TEXT"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/benchmarks/plus-2-times-3" />
       <recent name="$PROJECT_DIR$/benchmarks" />
     </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
@@ -123,10 +129,11 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="MainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+    <configuration name="MainKt" type="JetRunConfigurationType" singleton="false" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.semgus.verifier.MainKt" />
       <module name="semgus-verifier.main" />
       <shortenClasspath name="NONE" />
+      <option name="VM_PARAMETERS" value="-ea" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -208,7 +215,14 @@
       <option name="project" value="LOCAL" />
       <updated>1672158792440</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="working on mul-by-while!">
+      <created>1672338433432</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1672338433433</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -232,7 +246,8 @@
     <MESSAGE value="feat: extracting model from z3 output" />
     <MESSAGE value="fix: model extraction&#10;&#10;Due to inlining in Spacer, sometimes we cannot extract Counterex from the output. One may resort to using query!0. However, we cannot guarantee that the order of arguments in query!0 are the same as those in Counterex. Therefore, we have to disable inlining.&#10;&#10;Not that some cases involves nonlinear operators like `*`. We need to use a different arithmetic solver when handling these." />
     <MESSAGE value="basic transformation done" />
-    <option name="LAST_COMMIT_MESSAGE" value="basic transformation done" />
+    <MESSAGE value="working on mul-by-while!" />
+    <option name="LAST_COMMIT_MESSAGE" value="working on mul-by-while!" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -241,19 +256,6 @@
           <properties class="java.lang.ClassCastException" package="java.lang" />
           <option name="timeStamp" value="6" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt</url>
-          <line>192</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt</url>
-          <line>216</line>
-          <properties>
-            <option name="lambda-ordinal" value="-1" />
-          </properties>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
