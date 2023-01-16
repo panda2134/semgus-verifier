@@ -63,9 +63,9 @@ class SmtAdapter(
 
             "sat" -> {
                 val sExpression = SexpFactory.parse(stdout.drop(1).joinToString("\n"))
-                val letExpr = extractLet(sExpression)
-                val cex = letExpr.flatMap { v -> extractCounterExample(v.second) }
-//                println(cex)
+                val cex = extractCounterExample(sExpression)
+                println(cex)
+
                 val argsAsStrings = cex.last().drop(1).map { v ->
                     when (v) {
                         is SexpString -> v.toString()
@@ -130,7 +130,10 @@ class SmtAdapter(
         val fullConstraint = target.problem.constraints.first() as SmtTerm.Quantifier
 
         val declaredRelation = mutableMapOf(
-            Pair("=", Optional.empty<List<String>>()), // temporarily treat = for booleans as predicate, not logical equivalent
+            Pair(
+                "=",
+                Optional.empty<List<String>>()
+            ), // temporarily treat = for booleans as predicate, not logical equivalent
             Pair("distinct", Optional.empty<List<String>>()),
             Pair(">", Optional.empty<List<String>>()), // builtins
             Pair("<", Optional.empty<List<String>>()),
@@ -141,7 +144,9 @@ class SmtAdapter(
 
         val smtFileParts = mutableListOf<String>()
 
-        fun addLine (line: String = "") { smtFileParts.add(line) }
+        fun addLine(line: String = "") {
+            smtFileParts.add(line)
+        }
 
         addLine("; prelude")
         addLine(prelude)
@@ -149,14 +154,14 @@ class SmtAdapter(
 
         addLine("; relation declarations")
         cexArgSignature = fullConstraint.bindings
-        addLine("(declare-rel Counterex (${fullConstraint.bindings.joinToString(" ") { v -> v.type.name }}))")
-        declaredRelation["Counterex"] = Optional.of(fullConstraint.bindings.map { v -> v.type.name })
+        addLine("(declare-rel Counterex (${fullConstraint.bindings.joinToString(" ") { v -> v.type.toSExpressionType() }}))")
+        declaredRelation["Counterex"] = Optional.of(fullConstraint.bindings.map { v -> v.type.toSExpressionType() })
         val printedRules = mutableSetOf<String>()
         for (rule in instantiatedRules) {
             if (rule.head.name in printedRules) continue
             printedRules.add(rule.head.name)
-            addLine("(declare-rel ${rule.head.name} (${rule.head.arguments.joinToString(" ") { v -> v.type.name }}))")
-            declaredRelation[rule.head.name] = Optional.of(rule.head.arguments.map { v -> v.type.name })
+            addLine("(declare-rel ${rule.head.name} (${rule.head.arguments.joinToString(" ") { v -> v.type.toSExpressionType() }}))")
+            declaredRelation[rule.head.name] = Optional.of(rule.head.arguments.map { v -> v.type.toSExpressionType() })
         }
         addLine()
         addLine("; semantic rules, instantiated with the given AST")
@@ -167,14 +172,15 @@ class SmtAdapter(
                     val name = "$${index}$${arg.name}"
                     if (name in printed) continue
                     printed.add(name)
-                    addLine("(declare-var $name ${arg.type})")
-                    declaredVars[name] = arg.type.name
+                    addLine("(declare-var $name ${arg.type.toSExpressionType()})")
+                    declaredVars[name] = arg.type.toSExpressionType()
                 }
             }
-            for (premise in rule.bodyRelations) {
-                printArgs(premise.arguments)
-            }
-            printArgs(rule.head.arguments)
+//            for (premise in rule.bodyRelations) {
+//                printArgs(premise.arguments)
+//            }
+            val typedVars = rule.extractTypedVars()
+            printArgs(rule.variables.keys.map { v -> typedVars[v]!! })
             addLine(rule.toSExpression("$${index}$"))
             addLine()
         }
@@ -184,7 +190,10 @@ class SmtAdapter(
         val semRelationHead = target.problem.targetNonTerminal.productions.entries.first()
             .value.semanticRules.first()!!.head
         val foTransformer = FOTransformer().apply {
-            this.declaredRelation = declaredRelation + Pair(semRelationHead.name, Optional.empty()) // define S.Sem although it will then be substituted
+            this.declaredRelation = declaredRelation + Pair(
+                semRelationHead.name,
+                Optional.empty()
+            ) // define S.Sem although it will then be substituted
         }
         val (form, subs) = foTransformer.toDNFClauseList(fullConstraint)
 //        form.forEach { x -> println(`SexprFormatter$`.`MODULE$`.formatted(x)) }
@@ -193,33 +202,36 @@ class SmtAdapter(
             val path = createTempFile("semgus-verification-${target.problem.targetName}-${index}", ".smt2")
             val w = path.toFile().printWriter()
             w.println(smtFileParts.joinToString("\n"))
+            w.println("; clause $index")
 
             val formInstantiated = SexprFormatter.formatted(formClause).replace(target.problem.targetName, "")
                 .replace(semRelationHead.name, rootRuleName)
             for (binding in fullConstraint.bindings) {
-                w.println("(declare-var ${binding.name} ${binding.type})")
+                w.println("(declare-var ${binding.name} ${binding.type.toSExpressionType()})")
             }
             for (n in subs) {
                 when (n) {
                     is Var -> {
                         w.println("(declare-var ${n.name()} ${n.typing()})")
                     }
+
                     is Con -> {
                         w.println("(declare-var ${n.name()} ${n.typing()})")
                     }
+
                     is Func -> {
                         assert(n.signature().isDefined)
                         val argTypes = CollectionConverters.asJava(n.signature().get()._1)
                         val rtnType = n.signature().get()._2
                         w.println("(declare-fun ${n.name()} (${argTypes.joinToString(" ") { v -> v.toString() }}) ${rtnType.toString()})")
                     }
+
                     else -> throw IllegalStateException("not possible with pnf & skolemization!")
                 }
             }
             val verificationCond =
                 "(rule (=> $formInstantiated\n" +
                         "          (Counterex ${fullConstraint.bindings.joinToString(" ") { v -> v.name }}) ))"
-//            println(verificationCond)
             w.println(verificationCond)
             w.println()
             w.println("; query for counterexamples")
@@ -228,30 +240,4 @@ class SmtAdapter(
             path
         }
     }
-
-//    private fun verifyAndExtract(): Triple<SmtTerm.Quantifier, SmtTerm.Application, SmtTerm.Application> {
-//        // only allow 1 constraint
-//        assert(target.problem.constraints.size == 1)
-//        val fullConstraint = target.problem.constraints.first() as SmtTerm.Quantifier
-//        println(fullConstraint.toSExpression())
-//        FOTransformer(fullConstraint)
-//        // only allow forall now
-//        assert(fullConstraint.type == SmtTerm.Quantifier.Type.FOR_ALL)
-//
-//        // inner parts of the quantified expression
-//        val quantifiedChild = fullConstraint.child as SmtTerm.Application
-//        assert(quantifiedChild.name.name == "=>" && quantifiedChild.arguments.size == 2)
-//        val semOccurrence = quantifiedChild.arguments.first()!!.term as SmtTerm.Application
-//
-//        // extract the premise, which should be a semantic relation application
-//        val semRelationHead = target.problem.targetNonTerminal.productions.entries.first()
-//            .value.semanticRules.first()!!.head
-//        assert(semOccurrence.name.name == semRelationHead.name)
-//        val programArgPos =
-//            semRelationHead.arguments.indexOfFirst { v -> v.type.name == target.problem.targetNonTerminal.name }
-//        // ensure that the semantic relation is applied on the synthesis target
-//        assert((semOccurrence.arguments[programArgPos].term as SmtTerm.Application).name.name == target.problem.targetName)
-//
-//        return Triple(fullConstraint, quantifiedChild, semOccurrence)
-//    }
 }

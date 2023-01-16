@@ -2,6 +2,7 @@ package org.semgus.verifier.smt
 
 import org.semgus.java.`object`.AttributeValue.AList
 import org.semgus.java.`object`.AttributeValue.AString
+import org.semgus.java.`object`.Identifier
 import org.semgus.java.`object`.RelationApp
 import org.semgus.java.`object`.SmtTerm
 import org.semgus.java.`object`.SmtTerm.Quantifier
@@ -40,3 +41,7 @@ fun SmtTerm.toSExpression(): String =
         is SmtTerm.CBitVector -> "#x" + value.toByteArray().reversed().joinToString { v -> "%02x".format(v) }
         else -> throw IllegalArgumentException("cannot convert this into s-expr")
     }
+
+fun Identifier.toSExpressionType(): String =
+    if (indices.isEmpty()) name
+    else "(_ $name ${indices.joinToString(" ")})"

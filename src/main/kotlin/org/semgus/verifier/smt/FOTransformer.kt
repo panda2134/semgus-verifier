@@ -58,7 +58,7 @@ class FOTransformer() {
     private fun toIllogicalTerm(term: SmtTerm, useFunc: Boolean = false): Node =
         when (term) {
             is SmtTerm.Quantifier -> term.bindings.map { v ->
-                Pair(v.name, v.type.name)
+                Pair(v.name, v.type.toSExpressionType())
             }.foldRight(toIllogicalTerm(term.child) as Form) { (s, ty), form ->
                 Qu(
                     if (term.type == SmtTerm.Quantifier.Type.EXISTS) {
@@ -112,7 +112,7 @@ class FOTransformer() {
                 }
             }
             is SmtTerm.Variable -> {
-                Var(term.name, ConcreteType(term.type.name))
+                Var(term.name, ConcreteType(term.type.toSExpressionType()))
             }
             is SmtTerm.CString -> {
                 Con("\"${term.value}\"", ConcreteType("String"))

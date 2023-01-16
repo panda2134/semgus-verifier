@@ -4,21 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e8ac0f73-d781-4910-8949-711e60015e55" name="Changes" comment="working on mul-by-while!">
-      <change afterPath="$PROJECT_DIR$/benchmarks/plus-2-times-3/wrong.sl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notes.md" afterDir="false" />
+    <list default="true" id="e8ac0f73-d781-4910-8949-711e60015e55" name="Changes" comment="fix: model extraction &amp; bitvec type handling">
+      <change afterPath="$PROJECT_DIR$/benchmarks/bv-swap/correct.sl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/benchmarks/bv-swap/correct.sl.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/benchmarks/bv-swap/wrong.sl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/benchmarks/bv-swap/wrong.sl.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/env.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/max2-exp-alt.sl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/max2-exp-alt.sl.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/max2-exp.sl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/max2-exp.sl.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/max3-exp.sl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/max3-exp.sl.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/mul-by-while.sl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/mul-by-while.sl.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/plus-2-times-3.sl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/plus-2-times-3.sl.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes.md" beforeDir="false" afterPath="$PROJECT_DIR$/notes.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/FOTransformer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/FOTransformer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SExpression.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SExpression.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/smt/SmtAdapter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/walk/ProgramWalker.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/semgus/verifier/walk/ProgramWalker.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +76,7 @@
     "WebServerToolWindowFactoryState": "false",
     "jdk.selected.JAVA_MODULE": "16",
     "last_directory_selection": "/home/panda2134/Documents/semgus-verifier/src/main/kotlin/org/semgus/verifier",
-    "last_opened_file_path": "/home/panda2134/Documents/semgus-verifier/benchmarks/plus-2-times-3",
+    "last_opened_file_path": "/home/panda2134/Documents/semgus-verifier/benchmarks/bvtest-swap-xor-01",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -95,6 +93,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/benchmarks/bvtest-swap-xor-01" />
       <recent name="$PROJECT_DIR$/benchmarks/plus-2-times-3" />
       <recent name="$PROJECT_DIR$/benchmarks" />
     </key>
@@ -172,6 +171,8 @@
       <workItem from="1672132935710" duration="678000" />
       <workItem from="1672141039066" duration="5770000" />
       <workItem from="1672315487299" duration="12223000" />
+      <workItem from="1672507340547" duration="1097000" />
+      <workItem from="1673779110392" duration="4506000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1665333031398</created>
@@ -222,7 +223,14 @@
       <option name="project" value="LOCAL" />
       <updated>1672338433433</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="basic benchmark cases">
+      <created>1672507295952</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1672507295952</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -247,7 +255,9 @@
     <MESSAGE value="fix: model extraction&#10;&#10;Due to inlining in Spacer, sometimes we cannot extract Counterex from the output. One may resort to using query!0. However, we cannot guarantee that the order of arguments in query!0 are the same as those in Counterex. Therefore, we have to disable inlining.&#10;&#10;Not that some cases involves nonlinear operators like `*`. We need to use a different arithmetic solver when handling these." />
     <MESSAGE value="basic transformation done" />
     <MESSAGE value="working on mul-by-while!" />
-    <option name="LAST_COMMIT_MESSAGE" value="working on mul-by-while!" />
+    <MESSAGE value="basic benchmark cases" />
+    <MESSAGE value="fix: model extraction &amp; bitvec type handling" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: model extraction &amp; bitvec type handling" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

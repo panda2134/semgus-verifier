@@ -15,3 +15,11 @@ alias run-parser='nix shell nixpkgs#dotnet-sdk_6 -c bash -c "cd $target_dir; dot
 ## mul-by-while
 
 for the correct case: `(error "query failed: Stuck on a lemma")`
+
+## bitvec
+
+- [x] BitVec type conversion!
+- [x] temporary variables created in `exists` are missing in output
+- [x] cannot parse bitvec literals in counterex output by z3?
+- [x] wrong bvtest target program? check semgus file
+- [x] line 28 in benchmark swap wrong!

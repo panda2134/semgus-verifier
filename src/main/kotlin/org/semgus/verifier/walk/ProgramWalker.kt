@@ -9,6 +9,8 @@ import org.semgus.java.`object`.SmtTerm
 import org.semgus.java.`object`.TypedVar
 import org.semgus.java.problem.SemgusProblem
 import org.semgus.verifier.smt.toSExpression
+import org.semgus.verifier.smt.toSExpressionType
+import org.semgus.verifier.smt.toSmtName
 import org.semgus.verifier.smt.withVariablePrefix
 import java.lang.IllegalArgumentException
 
@@ -16,10 +18,23 @@ class ProgramWalker(val program: AList, problem: SemgusProblem) {
     data class InstantiatedSemanticRule (val head: RelationApp, val bodyRelations: List<RelationApp>,
                     val constraint: SmtTerm, val variables: Map<String, AnnotatedVar>,
                     val childTermVars: List<TypedVar>) {
+        private fun SmtTerm.extractTypedVars(): Map<String, TypedVar> = when (this) {
+            is SmtTerm.Quantifier -> bindings.associateBy { v -> v.name } + child.extractTypedVars()
+            is SmtTerm.Variable -> mapOf(Pair(this.name, TypedVar(this.name, this.type)))
+            is SmtTerm.Application -> arguments.flatMap { v -> v.term.extractTypedVars().toList() }.toMap()
+            is SmtTerm.CString -> mapOf()
+            is SmtTerm.CNumber -> mapOf()
+            is SmtTerm.CBitVector -> mapOf()
+            else -> throw IllegalArgumentException("cannot convert this into s-expr")
+        }
         fun toSExpression(variablePrefix: String = ""): String {
             return "(rule (=> (and ${bodyRelations.joinToString(" ") { v->v.toSExpression(variablePrefix) }} ${constraint.withVariablePrefix(variablePrefix).toSExpression()})\n" +
                     "     ${head.toSExpression(variablePrefix)}))"
         }
+        fun extractTypedVars(): Map<String, TypedVar> =
+            (head.arguments.map { v -> Pair(v.name, v) } +
+                    bodyRelations.flatMap { r -> r.arguments.map { v -> Pair(v.name, v) } }).toMap() +
+                    constraint.extractTypedVars()
     }
     private val rtgHelper = RegularTreeGrammarHelper(problem.nonTerminals)
     private var semanticCounter = 0
@@ -72,7 +87,9 @@ class ProgramWalker(val program: AList, problem: SemgusProblem) {
                                 assert(br.name == oldRuleName)
                                 val currentASTVar =
                                     sem.head.arguments.first { v -> v.type.name == rule.nonTerminalName }
-                                assert(br.arguments.any { v -> v.type.name == currentASTVar.type.name && v.name == currentASTVar.name })
+                                assert(br.arguments.any { v ->
+                                    v.type.toSExpressionType() == currentASTVar.type.toSExpressionType()
+                                        && v.name == currentASTVar.name })
                                 RelationApp(
                                     newRuleName,
                                     br.arguments.filter { v -> v.name != currentASTVar.name }
@@ -88,6 +105,7 @@ class ProgramWalker(val program: AList, problem: SemgusProblem) {
                     )
                     instantiatedSemantics.add(newInstRule)
                 }
+                println("$semanticCounter -> ${node.toSExpression()}")
                 semanticCounter++
                 return newRuleName
             }
@@ -111,6 +129,7 @@ class ProgramWalker(val program: AList, problem: SemgusProblem) {
                     )
                     instantiatedSemantics.add(newInstRule)
                 }
+                println("$semanticCounter -> $node")
                 semanticCounter++
                 return newRuleName
             }
