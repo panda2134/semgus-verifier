@@ -38,7 +38,9 @@ fun SmtTerm.toSExpression(): String =
             else "($name ${arguments.joinToString(" ") { v -> v.term.toSExpression() }})"
         is SmtTerm.CString -> "\"${value}\""
         is SmtTerm.CNumber -> value.toString()
-        is SmtTerm.CBitVector -> "#x" + value.toByteArray().reversed().joinToString { v -> "%02x".format(v) }
+        is SmtTerm.CBitVector -> {
+            "#b" + (0 until size).reversed().map { index -> if (value.get(index)) '1' else '0' }.joinToString("")
+        }
         else -> throw IllegalArgumentException("cannot convert this into s-expr")
     }
 

@@ -121,8 +121,7 @@ class FOTransformer() {
                 Con(term.value.toString(), ConcreteType("Int"))
             }
             is SmtTerm.CBitVector -> {
-                val lit =
-                    "#x" + term.value.toByteArray().reversed().joinToString { v -> "%02x".format(v) }
+                val lit = term.toSExpression()
                 Con(lit, ConcreteType("(_ BitVec ${term.size})"))
             }
 
